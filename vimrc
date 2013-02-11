@@ -22,16 +22,18 @@ Bundle 'The-NERD-Commenter'
 Bundle 'glsl.vim'
 
 " Bundle Powerline {{{
-Bundle 'Lokaltog/powerline'
-set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
-let g:Powerline_symbols = 'fancy'
-let g:Powerline_cache_enabled = 1
-let g:Powerline_colorscheme = 'badwolf'
+if has('python')
+    Bundle 'Lokaltog/powerline'
+    set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+    let g:Powerline_symbols = 'fancy'
+    let g:Powerline_cache_enabled = 1
+    let g:Powerline_colorscheme = 'badwolf'
 
-if has("gui_running")
-"Install Menlo from https://github.com/Lokaltog/powerline-fonts if
-"Powerline looks weird
-set guifont=Menlo\ Regular\ for\ Powerline:h12
+    if has("gui_running")
+    "Install Menlo from https://github.com/Lokaltog/powerline-fonts if
+    "Powerline looks weird
+    set guifont=Menlo\ Regular\ for\ Powerline:h12
+    endif
 endif
 "}}}
 
@@ -182,19 +184,22 @@ set noswapfile                    " It's 2012, Vim.
 " Make Vim able to edit crontab files again.
 set backupskip=/tmp/*,/private/tmp/*"
 
-set undodir=~/.vim/tmp/undo//     " undo files
 set backupdir=~/.vim/tmp/backup// " backups
 set directory=~/.vim/tmp/swap//   " swap files
 
 " Make those folders automatically if they don't already exist.
-if !isdirectory(expand(&undodir))
-    call mkdir(expand(&undodir), "p")
-endif
 if !isdirectory(expand(&backupdir))
     call mkdir(expand(&backupdir), "p")
 endif
 if !isdirectory(expand(&directory))
     call mkdir(expand(&directory), "p")
+endif
+
+if has('persistent_undo')
+    set undodir=~/.vim/tmp/undo//     " undo files
+    if !isdirectory(expand(&undodir))
+        call mkdir(expand(&undodir), "p")
+    endif
 endif
 
 " }}}
