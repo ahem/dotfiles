@@ -1,5 +1,27 @@
 set nocompatible
-filetype plugin indent on
+
+" Vundle {{{
+
+filetype off " required!
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle, required!
+Bundle 'gmarik/vundle'
+
+" Other bundles goes here:
+Bundle 'Syntastic'
+let g:syntastic_auto_loc_list=1
+
+Bundle 'minibufexpl.vim'
+let g:miniBufExplorerMoreThanOne=1
+let g:miniBufExplMapCTabSwitchBufs = 1 
+
+Bundle 'Lokaltog/powerline'
+
+filetype plugin indent on " required!
+" }}}
 
 colorscheme darkblue
 
@@ -117,8 +139,8 @@ if has("autocmd")
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
     " store folds on quit, restore them on load
-    au BufWinLeave * silent! mkview 
-    au BufWinEnter * silent! loadview
+    au BufWinLeave .* if &modifiable | silent mkview | endif 
+    au BufWinEnter .* if &modifiable  | silent loadview | endif 
 
     augroup set_filetypes
         au!
@@ -176,7 +198,6 @@ nmap <leader>tt :TlistToggle<cr>
 nmap <leader>to :TlistOpen<cr>
 nmap <leader>tc :TlistClose<cr>
 
-let g:miniBufExplMapCTabSwitchBufs = 1 
 nnoremap <Leader>g :e#<CR>
 nnoremap <Leader>1 :1b<CR>
 nnoremap <Leader>2 :2b<CR>
@@ -188,6 +209,18 @@ nnoremap <Leader>7 :7b<CR>
 nnoremap <Leader>8 :8b<CR>
 nnoremap <Leader>9 :9b<CR>
 nnoremap <Leader>0 :10b<CR>
+
+" {{{ window navigation
+
+nmap <c-j> <c-w>j<c-w>
+nmap <c-k> <c-w>k<c-w>
+nmap <c-h> <c-w>h<c-w>
+nmap <c-l> <c-w>l<c-w>
+
+
+" }}}
+
+
 
 
 
