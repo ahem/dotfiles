@@ -15,11 +15,13 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Other bundles goes here:
-Bundle 'The-NERD-Commenter'
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
-" Powerline {{{
+Bundle 'The-NERD-Commenter'
+Bundle 'glsl.vim'
+
+" Bundle Powerline {{{
 Bundle 'Lokaltog/powerline'
 set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
 let g:Powerline_symbols = 'fancy'
@@ -33,7 +35,7 @@ set guifont=Menlo\ Regular\ for\ Powerline:h12
 endif
 "}}}
 
-" Vimpanel {{{
+" Bundle Vimpanel {{{
 Bundle 'mihaifm/vimpanel'
 let g:NERDTreeWinPos='left'
 let g:NERDTreeWinSize=40
@@ -47,7 +49,7 @@ cabbrev vss VimpanelSessionMake
 cabbrev vsl VimpanelSessionLoad
 " }}}
 
-" FuzzyFinder {{{
+" Bundle FuzzyFinder {{{
 "L9 is required by FuzzyFinder
 Bundle 'L9'
 Bundle 'FuzzyFinder'
