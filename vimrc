@@ -1,6 +1,8 @@
 set nocompatible
 filetype plugin indent on
 
+colorscheme darkblue
+
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
@@ -9,6 +11,20 @@ set ruler       " show the cursor position all the time
 set showcmd     " display incomplete commands
 set incsearch   " do incremental searching
 
+set guioptions-=T "remove toolbar
+set guioptions-=t "remove tearoff menus
+set encoding=utf-8
+set visualbell
+set autoindent
+
+" nice tabstobs
+set shiftwidth=4
+set tabstop=4
+set smarttab
+set softtabstop=4
+set shiftround
+set expandtab
+
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
@@ -16,41 +32,21 @@ map Q gq
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
+" if the terminal has colors
+if &t_Co > 2 || has("gui_running") 
     syntax on
     set hlsearch
 endif
 
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
 
-    autocmd FileType text setlocal textwidth=78
-
-    " When editing a file, always jump to the last known cursor position.
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-
-    " store folds on quit, restore them on load
-    au BufWinLeave * silent! mkview 
-    au BufWinEnter * silent! loadview
-else
-    set autoindent﻿  ﻿  " always set autoindenting on
-endif " has("autocmd")
-
-
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
-endif
-
+" Win32 specific {{{
 
 if has("win32")
     source $VIMRUNTIME/mswin.vim
     set guifont=Lucida_Console:h9
 endif
+
+" }}}
 
 " Backups {{{
 
@@ -77,8 +73,14 @@ endif
 
 " }}}
 
+" Diff stuff {{{
 
-
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
+endif
 
 set diffexpr=MyDiff()
 function! MyDiff()
@@ -105,8 +107,18 @@ function! MyDiff()
     silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 endfunction
 
+" }}}
 
 if has("autocmd")
+
+    autocmd FileType text setlocal textwidth=78
+
+    " When editing a file, always jump to the last known cursor position.
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+
+    " store folds on quit, restore them on load
+    au BufWinLeave * silent! mkview 
+    au BufWinEnter * silent! loadview
 
     augroup set_filetypes
         au!
@@ -114,7 +126,7 @@ if has("autocmd")
         au BufRead,BufNewFile *.brail setfiletype html
         au BufRead,BufNewFile *.drxml setfiletype xml
         
-        au BufRead,BufNewFile *.frag,*.vert,*.fp,*.vp,*.glsl setfiletype glsl
+        au BufRead,BufNewFile *.{frag,vert,fp,vp,glsl} setfiletype glsl
 
         au Filetype perl compiler perl
         au Filetype perl nmap <buffer> <F5> :make<cr>
@@ -132,25 +144,13 @@ if has("autocmd")
 
     augroup vimrcEx
         au!
+        au bufreadpost {.,_}vimrc setlocal foldmethod=marker
+
         " Source the vimrc file after saving it
-        autocmd bufwritepost .vimrc source $MYVIMRC
-        autocmd bufwritepost _vimrc source $MYVIMRC
+        au bufwritepost {.,_}vimrc source $MYVIMRC
     augroup END
 endif
 
-set guioptions-=T "remove toolbar
-set guioptions-=t "remove tearoff menus
-set encoding=utf-8
-set visualbell
-colorscheme darkblue
-
-" nice tabstobs
-set shiftwidth=4
-set tabstop=4
-set smarttab
-set softtabstop=4
-set shiftround
-set expandtab
 
 " stupid danish keyboard, fix goto-mark-key
 nmap ½ `
