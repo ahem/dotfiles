@@ -71,8 +71,11 @@ function! FufFindByVimPanel()
         let startbuf = bufnr('%')
         while 1
             if &ft == 'vimpanel'
-                let name = strpart(bufname('%'), 9)
-                call extend(dirlist, readfile(g:VimpanelStorage . '/' . name))
+                "catch output of g/^\/ (lines starting with /) into the matches variable
+                redir => matches
+                g/^\/
+                redir END
+                call extend(dirlist, split(matches, '\n'))
             endif
 
             bnext
