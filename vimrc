@@ -20,7 +20,6 @@ let g:syntastic_auto_loc_list=1
 
 Bundle 'The-NERD-Commenter'
 Bundle 'glsl.vim'
-Bundle 'adinapoli/vim-markmultiple'
 
 " Bundle Powerline {{{
 Bundle 'Lokaltog/powerline'
@@ -283,7 +282,7 @@ endif
 nmap ½ `
 
 " map F1 to something sensible instead of help
-nmap <f1> <esc>:nohlsearch<cr>:call MarkMultipleClean()<cr>
+nmap <f1> :nohlsearch<cr>
 imap <f1> <esc>
 
 " map ctrl-space to omnicompletion
