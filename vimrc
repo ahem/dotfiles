@@ -1,6 +1,9 @@
 set nocompatible
 set laststatus=2
 
+" set leader to comma, which is more accessible
+let mapleader = ","
+
 " Vundle {{{
 
 filetype off " required!
@@ -12,36 +15,37 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Other bundles goes here:
+Bundle 'The-NERD-Commenter'
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
+" Powerline {{{
+Bundle 'Lokaltog/powerline'
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+let g:Powerline_symbols = 'fancy'
+let g:Powerline_cache_enabled = 1
+let g:Powerline_colorscheme = 'badwolf'
 
-"  Bundle 'Lokaltog/powerline'
-"  set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
-"  let g:Powerline_symbols = 'fancy'
-"  let g:Powerline_cache_enabled = 1
-"  let g:Powerline_colorscheme = 'badwolf'
-"  
-"  if has("gui_running")
-"  "Install Menlo from https://github.com/Lokaltog/powerline-fonts if
-"  "Powerline looks weird
-"  set guifont=Menlo\ Regular\ for\ Powerline:h12
-"  endif
+if has("gui_running")
+"Install Menlo from https://github.com/Lokaltog/powerline-fonts if
+"Powerline looks weird
+set guifont=Menlo\ Regular\ for\ Powerline:h12
+endif
+"}}}
 
 " Vimpanel {{{
 Bundle 'mihaifm/vimpanel'
 let g:NERDTreeWinPos='left'
 let g:NERDTreeWinSize=40
 let g:VimpanelStorage=expand('$HOME') . '/' . '.vim/vimpanel' 
-cabbrev ss VimpanelSessionMake
-cabbrev sl VimpanelSessionLoad
 cabbrev vp Vimpanel
 cabbrev vl VimpanelLoad
 cabbrev vc VimpanelCreate
 cabbrev ve VimpanelEdit
 cabbrev vr VimpanelRemove
+cabbrev vss VimpanelSessionMake
+cabbrev vsl VimpanelSessionLoad
 " }}}
-
 
 " FuzzyFinder {{{
 "L9 is required by FuzzyFinder
@@ -98,9 +102,9 @@ nnoremap <leader>b :FufBuffer<cr>
 nnoremap <leader>f :call FufFindByVimPanel()<cr>
 " }}}
 
-"  Bundle 'minibufexpl.vim'
-"  let g:miniBufExplorerMoreThanOne=1
-"  let g:miniBufExplMapCTabSwitchBufs = 1 
+"Bundle 'minibufexpl.vim'
+"let g:miniBufExplorerMoreThanOne=1
+"let g:miniBufExplMapCTabSwitchBufs = 1 
 
 filetype plugin indent on " required!
 
@@ -279,8 +283,6 @@ imap <f1> <esc>
 " map ctrl-space to omnicompletion
 inoremap <C-space> <C-x><C-o>
 
-" set leader to comma, which is more accessible
-let mapleader = ","
 
 command! FixLines :%s/\r//g<cr>
 
