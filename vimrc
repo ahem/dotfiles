@@ -1,4 +1,5 @@
 set nocompatible
+set laststatus=2
 
 " Vundle {{{
 
@@ -14,13 +15,106 @@ Bundle 'gmarik/vundle'
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
-Bundle 'minibufexpl.vim'
-let g:miniBufExplorerMoreThanOne=1
-let g:miniBufExplMapCTabSwitchBufs = 1 
 
-Bundle 'Lokaltog/powerline'
+"  Bundle 'Lokaltog/powerline'
+"  set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+"  let g:Powerline_symbols = 'fancy'
+"  let g:Powerline_cache_enabled = 1
+"  let g:Powerline_colorscheme = 'badwolf'
+"  
+"  if has("gui_running")
+"  "Install Menlo from https://github.com/Lokaltog/powerline-fonts if
+"  "Powerline looks weird
+"  set guifont=Menlo\ Regular\ for\ Powerline:h12
+"  endif
+
+" Vimpanel {{{
+Bundle 'mihaifm/vimpanel'
+let g:NERDTreeWinPos='left'
+let g:NERDTreeWinSize=40
+let g:VimpanelStorage=expand('$HOME') . '/' . '.vim/vimpanel' 
+cabbrev ss VimpanelSessionMake
+cabbrev sl VimpanelSessionLoad
+cabbrev vp Vimpanel
+cabbrev vl VimpanelLoad
+cabbrev vc VimpanelCreate
+cabbrev ve VimpanelEdit
+cabbrev vr VimpanelRemove
+" }}}
+
+
+" FuzzyFinder {{{
+"L9 is required by FuzzyFinder
+Bundle 'L9'
+Bundle 'FuzzyFinder'
+
+" FufFindByVimPanel function {{{
+function! FufFindByVimPanel()
+    let dirlist = []
+
+    "save the original view
+    let origIgnore = &eventignore
+    let [origbuf, origview] = [bufnr("%"), winsaveview()]
+    let origFoldenable = &foldenable
+    set nofoldenable
+
+    " disable autocommands
+    set eventignore=all
+    try
+        bfirst
+        let startbuf = bufnr('%')
+        while 1
+            if &ft == 'vimpanel'
+                let name = strpart(bufname('%'), 9)
+                call extend(dirlist, readfile(g:VimpanelStorage . '/' . name))
+            endif
+
+            bnext
+            if bufnr('%') == startbuf
+                break
+            end
+        endwhile
+
+    finally
+        "restore the original view
+        exec "buffer " . origbuf
+        let &foldenable = origFoldenable
+        call winrestview(origview)
+
+        "enable autocommands again
+        exec 'set eventignore=' . origIgnore
+    endtry
+
+    if len(dirlist) > 0
+        call fuf#setOneTimeVariables(['g:fuf_coveragefile_globPatterns', map(dirlist, 'v:val . "**/*"')])
+                \ | FufCoverageFile
+    else
+        FufFile
+    endif
+
+endfunction
+" }}}
+nnoremap <leader>b :FufBuffer<cr>
+nnoremap <leader>f :call FufFindByVimPanel()<cr>
+" }}}
+
+"  Bundle 'minibufexpl.vim'
+"  let g:miniBufExplorerMoreThanOne=1
+"  let g:miniBufExplMapCTabSwitchBufs = 1 
 
 filetype plugin indent on " required!
+
+ "
+ " Brief help
+ " :BundleList          - list configured bundles
+ " :BundleInstall(!)    - install(update) bundles
+ " :BundleSearch(!) foo - search(or refresh cache first) for foo
+ " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+ "
+ " see :h vundle for more details or wiki for FAQ
+ " NOTE: comments after Bundle command are not allowed..
+
+
 " }}}
 
 colorscheme darkblue
@@ -59,6 +153,7 @@ if &t_Co > 2 || has("gui_running")
     syntax on
     set hlsearch
 endif
+    
 
 
 " Win32 specific {{{
@@ -212,15 +307,13 @@ nnoremap <Leader>0 :10b<CR>
 
 " {{{ window navigation
 
-nmap <c-j> <c-w>j<c-w>
-nmap <c-k> <c-w>k<c-w>
-nmap <c-h> <c-w>h<c-w>
-nmap <c-l> <c-w>l<c-w>
+nmap <c-j> <c-w>j
+nmap <c-k> <c-w>k
+nmap <c-h> <c-w>h
+nmap <c-l> <c-w>l
 
 
 " }}}
-
-
 
 
 
