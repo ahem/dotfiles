@@ -14,7 +14,9 @@
 - Mark multiple?? https://github.com/adinapoli/vim-markmultiple/
 - Tagbar for better ctags support: http://majutsushi.github.com/tagbar/
 - ...or maybe something else for CTags support?? http://andrew-stewart.ca/2012/10/31/vim-ctags
-
+- sejt git plugin: https://github.com/tpope/vim-fugitive (screencasts med cool demoer)
+- Gundo ser cool ud: https://github.com/tpope/vim-fugitive
+- vim-surround bliver anbefalet alle mulige steder fra. Måske er det noget værd
 
 
 
