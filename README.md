@@ -15,6 +15,12 @@
  4. mklink %HOME%\.vimrc %HOME%\.vim\vimrc
  5. mklink %HOME%\.jshintrc %HOME%\.vim\jshintrc
  6. run vim, bundleinstall and so on, as above.
+ 7. add this to %HOME%\.vim\.git\hooks\post-checkout:
+ ```
+#!/bin/sh
+rm ~/.vimrc
+ln vimrc ~/.vimrc
+ ```
 
 ### Powerline and windows
 
@@ -73,32 +79,4 @@ install sleightly happyer.
 - Gundo ser cool ud: https://github.com/tpope/vim-fugitive
 - vim-surround bliver anbefalet alle mulige steder fra. Måske er det noget værd
 
-
-
-c:\Prog32\Oracle\Ora11GR2\bin\
-C:\WINDOWS\system32
-C:\WINDOWS
-C:\WINDOWS\System32\Wbem
-C:\WINDOWS\System32\WindowsPowerShell\v1.0\
-c:\Program Files (x86)\Enterprise Vault\EVClient\
-c:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\
-c:\Program Files\Microsoft SQL Server\100\Tools\Binn\
-c:\Program Files\Microsoft SQL Server\100\DTS\Binn\
-C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\
-C:\Program Files (x86)\Vim\vim73
-c:\python27
-C:\Python27\Scripts
-C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC
-C:\usr\npm
-C:\Program Files (x86)\nodejs\
-c:\usr\cyg-bin
-c:\usr\bin
-c:\usr\local\bin
-C:\Program Files (x86)\Microsoft Team Foundation Server 2010 Power Tools\
-C:\Program Files (x86)\IronRuby 1.1\bin
-C:\Program Files\Microsoft\Web Platform Installer\
-C:\Program Files (x86)\Git\cmd
-C:\Program Files (x86)\QuickTime\QTSystem\
-C:\Program Files (x86)\WinAnt\bin
-C:\Program Files\Vim\vim73 
 
