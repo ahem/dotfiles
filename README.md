@@ -16,6 +16,52 @@
  5. mklink %HOME%\.jshintrc %HOME%\.vim\jshintrc
  6. run vim, bundleinstall and so on, as above.
 
+### Powerline and windows
+
+
+Powerline is being ccrappy and opening cmd.exe windows all over the place, when
+you edit files in git repositories. To fix it you must install pygit2, which
+can be irritating. First, try unzipping the binary distribution from the pygit2
+dir, and copy the files from `site_packages` into your own python distribtion.
+
+If it works (`python -c "import pygit2"` doesn't throw errors) your are all done.
+
+If it fails you can try building it from source, which is very difficult...
+
+
+**Building from source**
+
+First build and install libgit2:
+
+ 1. install cmake from here, if it isn't installed: http://www.cmake.org/cmake/resources/software.html (32bit is okay)
+ 2. `git clone git@github.com:libgit2/libgit2.git`
+ 3. open the Visual Studio Command Prompt as admin (start -> programs -> visual studio -> visual studio tools)
+ 4. cd into the libgit2 source directory
+ 5. `mkdir build && cd build`
+ 6. `cmake .. -DSTDCALL=OFF -G "Visual Studio 10 Win64"`
+ 7. `cmake --build . --config release`
+ 8. `ctest -V`
+ 7. `cmake --build . --config release --target install`
+
+Okay, libgit is installed now. Now for pygit2 (http://www.pygit2.org/install.html#building-on-windows)
+
+ 1. python and distutils should be installed.
+ 2. `git clone git://github.com/libgit2/pygit2.git`
+ 3. open the Visual Studio Command Prompt as admin (start -> programs -> visual studio -> visual studio tools)
+ 4. cd into the pygit2 source directory
+ 5. `set LIBGIT2=c:\Program Files\libgit2`
+ 6. `python setup.py build  -c msvc` (I did this twice in a row. First time
+    failed with a weird "failed to load and parse the manifest" error. Second
+    time apparently worked.)
+ 7. `copy build\lib.win-amd64-2.7\git2.dll build\lib.win-amd64-2.7\libgit2.dll`
+ 8. `python setup.py install`
+
+Install still complains about the missing (or misnamed libgit.dll) but it still
+seems to copy it correctly. If it doesn't then just copy git2.dll into
+site\_packages. No file named libgit2.dll apears to be required, except to make
+install sleightly happyer.
+
+
 # Ideas
 
 - Omnisharp may be interesting for C# highlighting and completion: https://github.com/nosami/Omnisharp
@@ -28,4 +74,31 @@
 - vim-surround bliver anbefalet alle mulige steder fra. Måske er det noget værd
 
 
+
+c:\Prog32\Oracle\Ora11GR2\bin\
+C:\WINDOWS\system32
+C:\WINDOWS
+C:\WINDOWS\System32\Wbem
+C:\WINDOWS\System32\WindowsPowerShell\v1.0\
+c:\Program Files (x86)\Enterprise Vault\EVClient\
+c:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\
+c:\Program Files\Microsoft SQL Server\100\Tools\Binn\
+c:\Program Files\Microsoft SQL Server\100\DTS\Binn\
+C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\
+C:\Program Files (x86)\Vim\vim73
+c:\python27
+C:\Python27\Scripts
+C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC
+C:\usr\npm
+C:\Program Files (x86)\nodejs\
+c:\usr\cyg-bin
+c:\usr\bin
+c:\usr\local\bin
+C:\Program Files (x86)\Microsoft Team Foundation Server 2010 Power Tools\
+C:\Program Files (x86)\IronRuby 1.1\bin
+C:\Program Files\Microsoft\Web Platform Installer\
+C:\Program Files (x86)\Git\cmd
+C:\Program Files (x86)\QuickTime\QTSystem\
+C:\Program Files (x86)\WinAnt\bin
+C:\Program Files\Vim\vim73 
 
