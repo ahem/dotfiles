@@ -18,6 +18,9 @@ Bundle 'gmarik/vundle'
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
+Bundle 'xolox/vim-shell'
+let g:shell_mappings_enabled = 0
+
 Bundle 'The-NERD-Commenter'
 Bundle 'glsl.vim'
 
@@ -30,9 +33,17 @@ if has('python')
     let g:Powerline_colorscheme = 'badwolf'
 
     if has("gui_running")
-    "Install Menlo from https://github.com/Lokaltog/powerline-fonts if
-    "Powerline looks weird
-    set guifont=Menlo\ Regular\ for\ Powerline:h12
+        if !has('win32')
+            "Install Menlo from https://github.com/Lokaltog/powerline-fonts
+            set guifont=Menlo\ Regular\ for\ Powerline:h12
+        else
+            "Install consolas from https://github.com/eugeneching/consolas-powerline-vim
+            set encoding=utf-8
+            set guifont=Consolas_for_Powerline:h9
+            let g:Powerline_symbols="fancy"
+
+            "Note that powerline for windows also requires you to install pygit2
+        endif
     endif
 endif
 "}}}
@@ -75,7 +86,7 @@ function! FufFindByVimPanel()
             if &ft == 'vimpanel'
                 "catch output of g/^\/ (lines starting with /) into the matches variable
                 redir => matches
-                g/^\/
+                g/\(\a:\|^\/\)
                 redir END
                 call extend(dirlist, split(matches, '\n'))
             endif
@@ -171,7 +182,9 @@ endif
 
 if has("win32")
     source $VIMRUNTIME/mswin.vim
-    set guifont=Lucida_Console:h9
+    if &guifont !~? "powerline"
+        set guifont=Lucida_Console:h9
+    endif
 endif
 
 " }}}
