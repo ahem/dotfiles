@@ -23,6 +23,8 @@ let g:shell_mappings_enabled = 0
 
 Bundle 'The-NERD-Commenter'
 Bundle 'glsl.vim'
+Bundle 'groenewege/vim-less.git'
+Bundle 'matchit.zip'
 
 " Bundle Powerline {{{
 if has('python')
@@ -283,6 +285,13 @@ if has("autocmd")
         au!
         au BufNewFile,BufRead c:/code/p3/ektorp/* nmap <buffer> <F6> :!copy % c:\\wamp\\www\\ektorp<cr>
         au BufNewFile,BufRead c:/code/p3/wordpress/wp-content/plugins/* nmap <buffer> <F6> :!copy %:p %:p:s?C:\\code\\p3\\?c:\\wamp\\www\\?<cr>
+
+        " global assets
+        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <F6> :!"c:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\MSBuild.exe" c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\DR.GlobalAssets.Web.csproj /target:BeforeBuild /property:ProjectDir=c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\ /property:SolutionDir=c:\\code\\global-assets\\src\\<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :!"c:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\MSBuild.exe" c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\DR.GlobalAssets.Web.csproj /target:BeforeBuild /property:ProjectDir=c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\ /property:SolutionDir=c:\\code\\global-assets\\src\\<cr>
+
+        " psdb webfront
+        au BufNewFile,BufRead c:/code/psdb-web-front/*less nmap <buffer> <F6> :!"c:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\MSBuild.exe" c:\\code\\psdb-web-front\\src\\DR.PSDBWebFront\\DR.PSDBWebFront\\DR.PSDBWebFront.csproj /target:BeforeBuild /property:ProjectDir=c:\\code\\psdb-web-front\\src\\DR.PSDBWebFront\\DR.PSDBWebFront\\ /property:SolutionDir=c:\\code\\psdb-web-front\\src\\DR.PSDBWebFront\\<cr>
     augroup END
 
 
