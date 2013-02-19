@@ -25,6 +25,9 @@ Bundle 'The-NERD-Commenter'
 Bundle 'glsl.vim'
 Bundle 'groenewege/vim-less.git'
 Bundle 'matchit.zip'
+Bundle 'tpope/vim-fugitive.git'
+Bundle 'JSON.vim'
+Bundle 'ingydotnet/yaml-vim'
 
 " Bundle Powerline {{{
 if has('python')
@@ -39,7 +42,6 @@ if has('python')
             "Install Menlo from https://github.com/Lokaltog/powerline-fonts
             set guifont=Menlo\ Regular\ for\ Powerline:h12
         else
-            "Install consolas from https://github.com/eugeneching/consolas-powerline-vim
             set encoding=utf-8
             set guifont=Consolas_for_Powerline:h9
             let g:Powerline_symbols="fancy"
