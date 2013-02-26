@@ -19,7 +19,7 @@ Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
 Bundle 'xolox/vim-shell'
-let g:shell_mappings_enabled = 0
+let g:shell_mappings_enabled = 1
 
 Bundle 'The-NERD-Commenter'
 Bundle 'glsl.vim'
@@ -221,7 +221,7 @@ endif
 
 " }}}
 
-" Diff stuff {{{
+" Diff stusoff {{{
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
@@ -257,6 +257,34 @@ endfunction
 
 " }}}
 
+" MSBuild {{{
+function! FindInParentDir(pattern)
+    let dir = glob("%:p:h")
+    let safe = 100
+    while 1 && safe > 0
+        let matches = split(globpath(dir, a:pattern), '\n')
+        let safe = safe - 1
+
+        if len(matches) > 0
+            return matches[0]
+        endif
+        let nextdir = fnamemodify(dir, ":h")
+        if dir == nextdir
+            throw "not found"
+        endif
+        let dir = nextdir
+    endwhile
+endfunction
+
+function! MSBuild(target)
+    let msbuild = split(globpath("c:\\Windows\\Microsoft.NET\\Framework", "*\\MSBuild.exe"), '\n')[-1]
+    let csproj = FindInParentDir("*.csproj")
+    let sln = FindInParentDir("*.sln")
+    let cmd = join([ msbuild, csproj, "/property:ProjectDir=". fnamemodify(csproj, ":p:h") . "\\", "/property:SolutionDir=" . fnamemodify(sln, ":p:h") . "\\", "/target:" . a:target ], ' ')
+    execute "!".cmd
+endfunction
+" }}}
+
 if has("autocmd")
 
     autocmd FileType text setlocal textwidth=78
@@ -281,7 +309,6 @@ if has("autocmd")
         au Filetype perl nmap <buffer> <C-F5> :!perl -I "%:p:h" "%:p"<cr>
     augroup END
 
-
     augroup publish_files_at_work
         " mappings for easier publishing of stuff at work
         au!
@@ -289,11 +316,13 @@ if has("autocmd")
         au BufNewFile,BufRead c:/code/p3/wordpress/wp-content/plugins/* nmap <buffer> <F6> :!copy %:p %:p:s?C:\\code\\p3\\?c:\\wamp\\www\\?<cr>
 
         " global assets
-        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <F6> :!"c:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\MSBuild.exe" c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\DR.GlobalAssets.Web.csproj /target:BeforeBuild /property:ProjectDir=c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\ /property:SolutionDir=c:\\code\\global-assets\\src\\<cr>
-        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :!"c:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\MSBuild.exe" c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\DR.GlobalAssets.Web.csproj /target:BeforeBuild /property:ProjectDir=c:\\code\\global-assets\\src\\DR.GlobalAssets.Web\\ /property:SolutionDir=c:\\code\\global-assets\\src\\<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <F6> :call MSBuild("BuildJS")<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :call MSBuild("BuildCSS")<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <C-F6> :call MSBuild("BuildCSSandJS")<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <C-F6> :call MSBuild("BuildCSSandJS")<cr>
 
         " psdb webfront
-        au BufNewFile,BufRead c:/code/psdb-web-front/*less nmap <buffer> <F6> :!"c:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\MSBuild.exe" c:\\code\\psdb-web-front\\src\\DR.PSDBWebFront\\DR.PSDBWebFront\\DR.PSDBWebFront.csproj /target:BeforeBuild /property:ProjectDir=c:\\code\\psdb-web-front\\src\\DR.PSDBWebFront\\DR.PSDBWebFront\\ /property:SolutionDir=c:\\code\\psdb-web-front\\src\\DR.PSDBWebFront\\<cr>
+        au BufNewFile,BufRead c:/code/psdb-web-front/*less nmap <buffer> <F6> call MSBuild("BuildCSSandJS")<cr>
     augroup END
 
 
