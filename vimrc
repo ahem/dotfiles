@@ -29,6 +29,9 @@ Bundle 'tpope/vim-fugitive.git'
 Bundle 'JSON.vim'
 Bundle 'ingydotnet/yaml-vim'
 
+Bundle 'sjl/badwolf'
+colorscheme badwolf
+
 " Bundle Powerline {{{
 if has('python')
     Bundle 'Lokaltog/powerline'
@@ -41,6 +44,7 @@ if has('python')
         if !has('win32')
             "Install Menlo from https://github.com/Lokaltog/powerline-fonts
             set guifont=Menlo\ Regular\ for\ Powerline:h12
+            let g:Powerline_symbols="fancy"
         else
             set encoding=utf-8
             set guifont=Consolas_for_Powerline:h9
@@ -143,8 +147,6 @@ filetype plugin indent on " required!
 
 " }}}
 
-colorscheme darkblue
-
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
@@ -185,7 +187,9 @@ endif
 " Win32 specific {{{
 
 if has("win32")
-    source $VIMRUNTIME/mswin.vim
+    if filereadable("$VIMRUNTIME/mswin.vim")
+        source $VIMRUNTIME/mswin.vim
+    endif
     if &guifont !~? "powerline"
         set guifont=Lucida_Console:h9
     endif
@@ -258,8 +262,8 @@ endfunction
 " }}}
 
 " MSBuild {{{
-function! FindInParentDir(pattern)
-    let dir = glob("%:p:h")
+function! FindInParentDir(startdir, pattern)
+    let dir = a:startdir
     let safe = 100
     while 1 && safe > 0
         let matches = split(globpath(dir, a:pattern), '\n')
@@ -278,11 +282,14 @@ endfunction
 
 function! MSBuild(target)
     let msbuild = split(globpath("c:\\Windows\\Microsoft.NET\\Framework", "*\\MSBuild.exe"), '\n')[-1]
-    let csproj = FindInParentDir("*.csproj")
-    let sln = FindInParentDir("*.sln")
+    let csproj = FindInParentDir(glob("%:p:h"), "*.csproj")
+    let sln = FindInParentDir(glob("%:p:h"), "*.sln")
     let cmd = join([ msbuild, csproj, "/property:ProjectDir=". fnamemodify(csproj, ":p:h") . "\\", "/property:SolutionDir=" . fnamemodify(sln, ":p:h") . "\\", "/target:" . a:target ], ' ')
     execute "!".cmd
 endfunction
+
+command! -nargs=1 MSBuild :call MSBuild( "<args>" )
+
 " }}}
 
 if has("autocmd")
@@ -322,7 +329,7 @@ if has("autocmd")
         au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <C-F6> :call MSBuild("BuildCSSandJS")<cr>
 
         " psdb webfront
-        au BufNewFile,BufRead c:/code/psdb-web-front/*less nmap <buffer> <F6> call MSBuild("BuildCSSandJS")<cr>
+        au BufNewFile,BufRead c:/code/psdb-web-front/*less nmap <buffer> <F6> :call MSBuild("BeforeBuild")<cr>
     augroup END
 
 
