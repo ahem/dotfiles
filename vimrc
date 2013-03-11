@@ -225,7 +225,7 @@ endif
 
 " }}}
 
-" Diff stusoff {{{
+" Diff stuff {{{
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
@@ -325,11 +325,10 @@ if has("autocmd")
         " global assets
         au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <F6> :call MSBuild("BuildJS")<cr>
         au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :call MSBuild("BuildCSS")<cr>
-        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <C-F6> :call MSBuild("BuildCSSandJS")<cr>
-        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <C-F6> :call MSBuild("BuildCSSandJS")<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*{js,less} nmap <buffer> <C-F6> :call MSBuild("BuildCSSandJS")<cr>
 
         " psdb webfront
-        au BufNewFile,BufRead c:/code/psdb-web-front/*less nmap <buffer> <F6> :call MSBuild("BeforeBuild")<cr>
+        au BufNewFile,BufRead c:/code/psdb-web-front/*{less,js} nmap <buffer> <F6> :call MSBuild("BeforeBuild")<cr>
     augroup END
 
 
