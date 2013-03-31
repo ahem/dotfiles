@@ -73,6 +73,7 @@ install sleightly happyer.
 - Omnisharp may be interesting for C# highlighting and completion: https://github.com/nosami/Omnisharp
 - Get MiniBufExplorer to work again: https://github.com/fholgado/minibufexpl.vi
 - Mark multiple?? https://github.com/adinapoli/vim-markmultiple/
+- ...eller: https://github.com/hlissner/vim-multiedit (ser bedre ud)
 - Tagbar for better ctags support: http://majutsushi.github.com/tagbar/
 - ...or maybe something else for CTags support?? http://andrew-stewart.ca/2012/10/31/vim-ctags
 - sejt git plugin: https://github.com/tpope/vim-fugitive (screencasts med cool demoer)
@@ -80,7 +81,7 @@ install sleightly happyer.
 - vim-surround bliver anbefalet alle mulige steder fra. Måske er det noget værd
 - YouCompleteMe er det alle hipsterne bruger til at complete med. Ser også sejt ud: http://valloric.github.com/YouCompleteMe/
 - EasyMotion er måske noget? Nok noget man skal vænne sig meget til... http://www.vim.org/scripts/script.php?script_id=3526
-
+- JavaScript OmniCompletion: https://github.com/marijnh/tern
 
 
 
