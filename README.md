@@ -81,7 +81,6 @@ install sleightly happyer.
 - vim-surround bliver anbefalet alle mulige steder fra. Måske er det noget værd
 - YouCompleteMe er det alle hipsterne bruger til at complete med. Ser også sejt ud: http://valloric.github.com/YouCompleteMe/
 - EasyMotion er måske noget? Nok noget man skal vænne sig meget til... http://www.vim.org/scripts/script.php?script_id=3526
-- JavaScript OmniCompletion: https://github.com/marijnh/tern
 
 
 

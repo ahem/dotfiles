@@ -132,6 +132,8 @@ nnoremap <leader>f :call FufFindByVimPanel()<cr>
 "let g:miniBufExplorerMoreThanOne=1
 "let g:miniBufExplMapCTabSwitchBufs = 1 
 
+source ~/.vim/tern/vim/tern.vim
+
 filetype plugin indent on " required!
 
  "

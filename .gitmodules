@@ -1,3 +1,6 @@
 [submodule "bundle/vundle"]
 	path = bundle/vundle
 	url = https://github.com/gmarik/vundle.git
+[submodule "tern"]
+	path = tern
+	url = https://github.com/marijnh/tern
