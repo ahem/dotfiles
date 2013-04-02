@@ -77,7 +77,7 @@ install sleightly happyer.
 - Tagbar for better ctags support: http://majutsushi.github.com/tagbar/
 - ...or maybe something else for CTags support?? http://andrew-stewart.ca/2012/10/31/vim-ctags
 - sejt git plugin: https://github.com/tpope/vim-fugitive (screencasts med cool demoer)
-- Gundo ser cool ud: https://github.com/tpope/vim-fugitive
+- Gundo ser cool ud: http://sjl.bitbucket.org/gundo.vim/
 - vim-surround bliver anbefalet alle mulige steder fra. Måske er det noget værd
 - YouCompleteMe er det alle hipsterne bruger til at complete med. Ser også sejt ud: http://valloric.github.com/YouCompleteMe/
 - EasyMotion er måske noget? Nok noget man skal vænne sig meget til... http://www.vim.org/scripts/script.php?script_id=3526
