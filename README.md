@@ -70,17 +70,26 @@ install sleightly happyer.
 
 # Ideas
 
+Completion:
 - Omnisharp may be interesting for C# highlighting and completion: https://github.com/nosami/Omnisharp
-- Get MiniBufExplorer to work again: https://github.com/fholgado/minibufexpl.vi
-- Mark multiple?? https://github.com/adinapoli/vim-markmultiple/
-- ...eller: https://github.com/hlissner/vim-multiedit (ser bedre ud)
 - Tagbar for better ctags support: http://majutsushi.github.com/tagbar/
 - ...or maybe something else for CTags support?? http://andrew-stewart.ca/2012/10/31/vim-ctags
-- sejt git plugin: https://github.com/tpope/vim-fugitive (screencasts med cool demoer)
-- Gundo ser cool ud: http://sjl.bitbucket.org/gundo.vim/
-- vim-surround bliver anbefalet alle mulige steder fra. Måske er det noget værd
-- YouCompleteMe er det alle hipsterne bruger til at complete med. Ser også sejt ud: http://valloric.github.com/YouCompleteMe/
-- EasyMotion er måske noget? Nok noget man skal vænne sig meget til... http://www.vim.org/scripts/script.php?script_id=3526
+- YouCompleteMe is what all the hipsters use for autocompletion. Looks cool too: http://valloric.github.com/YouCompleteMe/
+- Objective C completion: http://appventure.me/2013/01/use-vim-as-xcode-alternative-ios-mac-cocoa.html
+
+SublimeText features:
+- Mark multiple?? https://github.com/adinapoli/vim-markmultiple/
+- ...or: https://github.com/hlissner/vim-multiedit (looks better)
+
+Stuff:
+- cool git plugin: https://github.com/tpope/vim-fugitive (screencasts med cool demoer)
+- Gundo looks cool: http://sjl.bitbucket.org/gundo.vim/
+- vim-surround might be cool: https://github.com/tpope/vim-surround
+- try out if this is better than NerdCommenter: https://github.com/tpope/vim-commentary
+- vim-repeat for repeating in vim-surrpund and vim-commentary: https://github.com/tpope/vim-repeat
+- EasyMotion?? Might take some getting used to: http://www.vim.org/scripts/script.php?script_id=3526
 
 
+# TODO
+- actually start using Fugitive - installing it is not enough!!!
 
