@@ -264,6 +264,19 @@ endfunction
 " }}}
 
 " MSBuild {{{
+
+"defines a the MSBuild command. Also defines autocompletion for targets
+"
+" Usage:
+"
+"   :MSBuild <target> [[property1=value1] [property2=value2]...]
+"
+" Examples:
+"
+"   :MSBuild BeforeBuild
+"   :MSBuild BeforeBuild Configuration=Release
+"   :MSBuild BuildCSS CSSVersion=005 Configuration=Debug
+"
 function! FindInParentDir(startdir, pattern)
     let dir = a:startdir
     let safe = 100
@@ -297,7 +310,15 @@ function! MSBuild(target, ...)
     execute "!".cmd
 endfunction
 
-command! -nargs=+ MSBuild :call MSBuild( <f-args> )
+function! MSBuildCompletion(ArgLead, CmdLine, CursorPos)
+    "only completes targets - for properties you must type them yourself
+    let csproj = FindInParentDir(glob("%:p:h"), "*.csproj")
+    let lines = filter(readfile(csproj), 'v:val =~ "<Target Name=\"' . a:ArgLead . '"')
+    let targets = map(lines, 'substitute(v:val, ".*<Target Name=\"\\(\\w\\+\\)\".*", "\\1", "")')
+    return targets
+endfunction
+
+command! -complete=customlist,MSBuildCompletion -nargs=+ MSBuild :call MSBuild( <f-args> )
 
 " }}}
 
@@ -332,12 +353,12 @@ if has("autocmd")
         au BufNewFile,BufRead c:/code/p3/wordpress/wp-content/plugins/* nmap <buffer> <F6> :!copy %:p %:p:s?C:\\code\\p3\\?c:\\wamp\\www\\?<cr>
 
         " global assets
-        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <F6> :call MSBuild("BuildJS")<cr>
-        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :call MSBuild("BuildCSS")<cr>
-        au BufNewFile,BufRead c:/code/global-assets/*{js,less} nmap <buffer> <C-F6> :call MSBuild("BuildCSSandJS")<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <F6> :MSBuild BuildJS<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :MSBuild BuildCSS<cr>
+        au BufNewFile,BufRead c:/code/global-assets/*{js,less} nmap <buffer> <C-F6> :MSBuild BuildCSSandJS<cr>
 
         " psdb webfront
-        au BufNewFile,BufRead c:/code/psdb-web-front/*{less,js} nmap <buffer> <F6> :call MSBuild("BeforeBuild")<cr>
+        au BufNewFile,BufRead c:/code/psdb-web-front/*{less,js} nmap <buffer> <F6> :MSBuild BeforeBuild<cr>
     augroup END
 
 
