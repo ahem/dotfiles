@@ -282,15 +282,22 @@ function! FindInParentDir(startdir, pattern)
     endwhile
 endfunction
 
-function! MSBuild(target)
+function! MSBuild(target, ...)
     let msbuild = split(globpath("c:\\Windows\\Microsoft.NET\\Framework", "*\\MSBuild.exe"), '\n')[-1]
     let csproj = FindInParentDir(glob("%:p:h"), "*.csproj")
     let sln = FindInParentDir(glob("%:p:h"), "*.sln")
-    let cmd = join([ msbuild, csproj, "/property:ProjectDir=". fnamemodify(csproj, ":p:h") . "\\", "/property:SolutionDir=" . fnamemodify(sln, ":p:h") . "\\", "/target:" . a:target ], ' ')
+    let cmd = join([
+        \ msbuild,
+        \ csproj,
+        \ "/property:ProjectDir=".  fnamemodify(csproj, ":p:h") . "\\",
+        \ "/property:SolutionDir=" . fnamemodify(sln, ":p:h") . "\\",
+        \ "/target:" . a:target,
+        \ join(map(copy(a:000), '"/property:" . v:val'), ' ')
+        \ ], ' ')
     execute "!".cmd
 endfunction
 
-command! -nargs=1 MSBuild :call MSBuild( "<args>" )
+command! -nargs=+ MSBuild :call MSBuild( <f-args> )
 
 " }}}
 
