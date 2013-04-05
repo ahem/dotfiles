@@ -88,6 +88,7 @@ Stuff:
 - try out if this is better than NerdCommenter: https://github.com/tpope/vim-commentary
 - vim-repeat for repeating in vim-surrpund and vim-commentary: https://github.com/tpope/vim-repeat
 - EasyMotion?? Might take some getting used to: http://www.vim.org/scripts/script.php?script_id=3526
+- vimscript unit testing: https://code.google.com/p/lh-vim/wiki/UT
 
 
 # TODO
