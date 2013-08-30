@@ -27,10 +27,8 @@ Bundle 'groenewege/vim-less.git'
 Bundle 'matchit.zip'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'JSON.vim'
+Bundle 'vim-coffee-script'
 Bundle 'ingydotnet/yaml-vim'
-
-Bundle 'sjl/badwolf'
-colorscheme badwolf
 
 " Bundle Powerline {{{
 if has('python')
@@ -56,6 +54,26 @@ if has('python')
 endif
 "}}}
 
+" {{{ colorschemes
+Bundle 'sjl/badwolf'
+"colorscheme badwolf
+"let g:Powerline_colorscheme = 'badwolf'
+
+Bundle 'Solarized'
+Bundle 'stephenmckinney/vim-solarized-powerline'
+"if has('gui_running')
+"    let g:Powerline_theme='short'
+"    let g:Powerline_colorscheme = 'solarized256'
+"    set background=light
+"    colorscheme solarized
+"else
+"endif
+
+colorscheme badwolf
+let g:Powerline_colorscheme = 'badwolf'
+
+" }}}
+            
 " Bundle Vimpanel {{{
 Bundle 'mihaifm/vimpanel'
 let g:NERDTreeWinPos='left'
@@ -116,8 +134,12 @@ function! FufFindByVimPanel()
     endtry
 
     if len(dirlist) > 0
+        "TODO: something to filter out dll's, png's and other stuff i don't want
+        let oldwildignore = &wildignore
+        set wildignore=*.dll,*.idx,*.png,*.jpg,*.jpeg,*.pdb
         call fuf#setOneTimeVariables(['g:fuf_coveragefile_globPatterns', map(dirlist, 'v:val . "**/*"')])
                 \ | FufCoverageFile
+        let &wildignore = oldwildignore
     else
         FufFile
     endif
@@ -132,7 +154,7 @@ nnoremap <leader>f :call FufFindByVimPanel()<cr>
 "let g:miniBufExplorerMoreThanOne=1
 "let g:miniBufExplMapCTabSwitchBufs = 1 
 
-source ~/.vim/tern/vim/tern.vim
+"source ~/.vim/tern/vim/tern.vim
 
 filetype plugin indent on " required!
 
@@ -302,12 +324,19 @@ function! MSBuild(target, ...)
     let cmd = join([
         \ msbuild,
         \ csproj,
+        \ "/verbosity:quiet",
+        \ "/nologo",
+        \ "/verbosity:detailed",
         \ "/property:ProjectDir=".  fnamemodify(csproj, ":p:h") . "\\",
         \ "/property:SolutionDir=" . fnamemodify(sln, ":p:h") . "\\",
         \ "/target:" . a:target,
         \ join(map(copy(a:000), '"/property:" . v:val'), ' ')
         \ ], ' ')
+    "execute "silent !".cmd
     execute "!".cmd
+    "TODO:
+    " - get errors to appear in quickfix
+    " - get defaulttarget to apear in completionlist + autobuild default target when MSBuild is called
 endfunction
 
 function! MSBuildCompletion(ArgLead, CmdLine, CursorPos)
@@ -338,12 +367,15 @@ if has("autocmd")
         au BufRead,BufNewFile *.vm setfiletype velocity 
         au BufRead,BufNewFile *.brail setfiletype html
         au BufRead,BufNewFile *.drxml setfiletype xml
-        
+        au BufRead,BufNewFile *.{md,markdown} setfiletype markdown
         au BufRead,BufNewFile *.{frag,vert,fp,vp,glsl} setfiletype glsl
 
         au Filetype perl compiler perl
         au Filetype perl nmap <buffer> <F5> :make<cr>
         au Filetype perl nmap <buffer> <C-F5> :!perl -I "%:p:h" "%:p"<cr>
+
+        au Filetype markdown setlocal spell spelllang=da
+        "autocmd Filetype markdown setlocal spell spelllang=en_us
     augroup END
 
     augroup publish_files_at_work
@@ -357,8 +389,9 @@ if has("autocmd")
         au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :MSBuild BuildCSS<cr>
         au BufNewFile,BufRead c:/code/global-assets/*{js,less} nmap <buffer> <C-F6> :MSBuild BuildCSSandJS<cr>
 
-        " psdb webfront
+        " psdb other projects
         au BufNewFile,BufRead c:/code/psdb-web-front/*{less,js} nmap <buffer> <F6> :MSBuild BeforeBuild<cr>
+        au BufNewFile,BufRead c:/code/dr-dk-frontpage/*{less,js} nmap <buffer> <F6> :MSBuild BeforeBuild<cr>
     augroup END
 
 
