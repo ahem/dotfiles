@@ -18,6 +18,7 @@ Bundle 'gmarik/vundle'
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
+Bundle 'xolox/vim-misc'
 Bundle 'xolox/vim-shell'
 let g:shell_mappings_enabled = 1
 
@@ -33,7 +34,7 @@ Bundle 'sjl/badwolf'
 colorscheme badwolf
 
 " Bundle Powerline {{{
-if has('python')
+if has('python') && 0
     Bundle 'Lokaltog/powerline'
     set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
     let g:Powerline_symbols = 'fancy'
@@ -43,7 +44,8 @@ if has('python')
     if has("gui_running")
         if !has('win32')
             "Install Menlo from https://github.com/Lokaltog/powerline-fonts
-            set guifont=Menlo\ Regular\ for\ Powerline:h12
+            "set guifont=Menlo\ Regular\ for\ Powerline:h12
+            set guifont=Meslo\ LG\ S\ Regular\ for\ Powerline:h11
             let g:Powerline_symbols="fancy"
         else
             set encoding=utf-8
@@ -55,6 +57,17 @@ if has('python')
     endif
 endif
 "}}}
+
+
+" Bundle AirLine {{{
+if has('python')
+    Bundle 'bling/vim-airline'
+    let g:airline_powerline_fonts = 1
+    set guifont=Meslo\ LG\ S\ Regular\ for\ Powerline:h11
+endif
+
+" }}}
+
 
 " Bundle Vimpanel {{{
 Bundle 'mihaifm/vimpanel'
