@@ -215,7 +215,6 @@ endif
 " Backups {{{
 
 set backup                        " enable backups
-set noswapfile                    " It's 2012, Vim.
 
 " Make Vim able to edit crontab files again.
 set backupskip=/tmp/*,/private/tmp/*"
