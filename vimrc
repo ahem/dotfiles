@@ -108,10 +108,8 @@ function! FufFindByVimPanel()
         while 1
             if &ft == 'vimpanel'
                 "catch output of g/^\/ (lines starting with /) into the matches variable
-                redir => matches
-                g/\(\a:\|^\/\)
-                redir END
-                call extend(dirlist, split(matches, '\n'))
+                let filename = g:VimpanelStorage . '/' .  substitute(expand('%'), '\v^vimpanel-', '', '')
+                let dirlist = dirlist + readfile(filename)
             endif
 
             bnext
@@ -119,6 +117,7 @@ function! FufFindByVimPanel()
                 break
             end
         endwhile
+
 
     finally
         "restore the original view
@@ -138,6 +137,8 @@ function! FufFindByVimPanel()
     endif
 
 endfunction
+
+
 " }}}
 nnoremap <leader>b :FufBuffer<cr>
 nnoremap <leader>f :call FufFindByVimPanel()<cr>
