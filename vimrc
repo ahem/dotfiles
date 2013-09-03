@@ -62,8 +62,10 @@ endif
 " Bundle AirLine {{{
 if has('python')
     Bundle 'bling/vim-airline'
-    let g:airline_powerline_fonts = 1
-    set guifont=Meslo\ LG\ S\ Regular\ for\ Powerline:h11
+    if has("gui_running")
+        let g:airline_powerline_fonts = 1
+        set guifont=Meslo\ LG\ M\ Regular\ for\ Powerline:h12
+    endif
 endif
 
 " }}}
