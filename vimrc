@@ -24,6 +24,7 @@ let g:shell_mappings_enabled = 1
 
 Bundle 'The-NERD-Commenter'
 Bundle 'glsl.vim'
+Bundle 'Handlebars'
 Bundle 'groenewege/vim-less.git'
 Bundle 'matchit.zip'
 Bundle 'tpope/vim-fugitive.git'
@@ -89,6 +90,9 @@ cabbrev vsl VimpanelSessionLoad
 "L9 is required by FuzzyFinder
 Bundle 'L9'
 Bundle 'FuzzyFinder'
+let g:fuf_maxMenuWidth = 150
+let g:fuf_dataDir = '~/.vim/fuf-data'
+
 
 " FufFindByVimPanel function {{{
 function! FufFindByVimPanel()
@@ -353,7 +357,8 @@ if has("autocmd")
         au BufRead,BufNewFile *.vm setfiletype velocity 
         au BufRead,BufNewFile *.brail setfiletype html
         au BufRead,BufNewFile *.drxml setfiletype xml
-        
+        au BufRead,BufNewFile *.md setfiletype Markdown
+        au BufRead,BufNewFile *.emberhbs setfiletype handlebars
         au BufRead,BufNewFile *.{frag,vert,fp,vp,glsl} setfiletype glsl
 
         au Filetype perl compiler perl
