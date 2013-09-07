@@ -11,54 +11,23 @@ filetype off " required!
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-" let Vundle manage Vundle, required!
 Bundle 'gmarik/vundle'
+Bundle 'tpope/vim-fugitive.git'
+Bundle 'The-NERD-Commenter'
+Bundle 'matchit.zip'
 
-" Other bundles goes here:
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
-Bundle 'xolox/vim-misc'
-Bundle 'xolox/vim-shell'
-let g:shell_mappings_enabled = 1
-
-Bundle 'The-NERD-Commenter'
+" syntax highlighting
 Bundle 'glsl.vim'
 Bundle 'Handlebars'
 Bundle 'groenewege/vim-less.git'
-Bundle 'matchit.zip'
-Bundle 'tpope/vim-fugitive.git'
 Bundle 'JSON.vim'
 Bundle 'ingydotnet/yaml-vim'
 
 Bundle 'sjl/badwolf'
 colorscheme badwolf
-
-" Bundle Powerline {{{
-if has('python') && 0
-    Bundle 'Lokaltog/powerline'
-    set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
-    let g:Powerline_symbols = 'fancy'
-    let g:Powerline_cache_enabled = 1
-    let g:Powerline_colorscheme = 'badwolf'
-
-    if has("gui_running")
-        if !has('win32')
-            "Install Menlo from https://github.com/Lokaltog/powerline-fonts
-            "set guifont=Menlo\ Regular\ for\ Powerline:h12
-            set guifont=Meslo\ LG\ S\ Regular\ for\ Powerline:h11
-            let g:Powerline_symbols="fancy"
-        else
-            set encoding=utf-8
-            set guifont=Consolas_for_Powerline:h9
-            let g:Powerline_symbols="fancy"
-
-            "Note that powerline for windows also requires you to install pygit2
-        endif
-    endif
-endif
-"}}}
-
 
 " Bundle AirLine {{{
 if has('python')
@@ -66,11 +35,11 @@ if has('python')
     if has("gui_running")
         let g:airline_powerline_fonts = 1
         set guifont=Meslo\ LG\ M\ Regular\ for\ Powerline:h12
+
+        " TODO: for windows, use Consolas_for_Powerline
     endif
 endif
-
 " }}}
-
 
 " Bundle Vimpanel {{{
 Bundle 'mihaifm/vimpanel'
@@ -121,8 +90,6 @@ function! FufFindByVimPanel()
                 break
             end
         endwhile
-
-
     finally
         "restore the original view
         exec "buffer " . origbuf
@@ -141,9 +108,8 @@ function! FufFindByVimPanel()
     endif
 
 endfunction
-
-
 " }}}
+
 nnoremap <leader>b :FufBuffer<cr>
 nnoremap <leader>f :call FufFindByVimPanel()<cr>
 " }}}
@@ -152,7 +118,6 @@ nnoremap <leader>f :call FufFindByVimPanel()<cr>
 "let g:miniBufExplorerMoreThanOne=1
 "let g:miniBufExplMapCTabSwitchBufs = 1 
 
-source ~/.vim/tern/vim/tern.vim
 
 filetype plugin indent on " required!
 
@@ -204,7 +169,6 @@ if &t_Co > 2 || has("gui_running")
     set hlsearch
 endif
     
-
 
 " Win32 specific {{{
 
@@ -366,27 +330,9 @@ if has("autocmd")
         au Filetype perl nmap <buffer> <C-F5> :!perl -I "%:p:h" "%:p"<cr>
     augroup END
 
-    augroup publish_files_at_work
-        " mappings for easier publishing of stuff at work
-        au!
-        au BufNewFile,BufRead c:/code/p3/ektorp/* nmap <buffer> <F6> :!copy % c:\\wamp\\www\\ektorp<cr>
-        au BufNewFile,BufRead c:/code/p3/wordpress/wp-content/plugins/* nmap <buffer> <F6> :!copy %:p %:p:s?C:\\code\\p3\\?c:\\wamp\\www\\?<cr>
-
-        " global assets
-        au BufNewFile,BufRead c:/code/global-assets/*js nmap <buffer> <F6> :MSBuild BuildJS<cr>
-        au BufNewFile,BufRead c:/code/global-assets/*less nmap <buffer> <F6> :MSBuild BuildCSS<cr>
-        au BufNewFile,BufRead c:/code/global-assets/*{js,less} nmap <buffer> <C-F6> :MSBuild BuildCSSandJS<cr>
-
-        " psdb webfront
-        au BufNewFile,BufRead c:/code/psdb-web-front/*{less,js} nmap <buffer> <F6> :MSBuild BeforeBuild<cr>
-    augroup END
-
-
     augroup vimrcEx
         au!
         au bufreadpost {.,_}vimrc setlocal foldmethod=marker
-
-        " Source the vimrc file after saving it
         au bufwritepost {.,_}vimrc source $MYVIMRC
     augroup END
 endif
@@ -401,9 +347,6 @@ imap <f1> <esc>
 
 " map ctrl-space to omnicompletion
 inoremap <C-space> <C-x><C-o>
-
-
-command! FixLines :%s/\r//g<cr>
 
 " make buffers work better
 set hidden
@@ -432,7 +375,6 @@ nmap <c-j> <c-w>j
 nmap <c-k> <c-w>k
 nmap <c-h> <c-w>h
 nmap <c-l> <c-w>l
-
 
 " }}}
 
