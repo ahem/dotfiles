@@ -4,6 +4,26 @@ set laststatus=2
 " set leader to comma, which is more accessible
 let mapleader = ","
 
+" function HasPythonVersion {{{
+function! HasPythonVersion(version)
+    if !has('python')
+        return 0
+    endif
+
+    python << ENDPYTHON
+import sys, vim
+bits = [int(x) for x in vim.eval('a:version').split('.')]
+if sys.version_info.major > bits[0] \
+    or (sys.version_info.major == bits[0] and sys.version_info.minor > bits[1]) \
+    or (sys.version_info.major == bits[0] and sys.version_info.minor == bits[1] and sys.version_info.micro >= bits[2]):
+    vim.command("let result = 1")
+else:
+    vim.command("let result = 0")
+ENDPYTHON
+    return result
+endfunction
+" }}}
+
 " Vundle {{{
 
 filetype off " required!
@@ -15,8 +35,11 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'The-NERD-Commenter'
 Bundle 'matchit.zip'
-Bundle 'marijnh/tern_for_vim'
-let g:tern_show_argument_hints = 'on_move'
+
+if (HasPythonVersion('2.7.5'))
+    Bundle 'marijnh/tern_for_vim'
+    let g:tern_show_argument_hints = 'on_move'
+endif
 
 Bundle 'ervandew/supertab'
 let g:SuperTabDefaultCompletionType = "context"
@@ -120,11 +143,6 @@ endfunction
 nnoremap <leader>b :FufBuffer<cr>
 nnoremap <leader>f :call FufFindByVimPanel()<cr>
 " }}}
-
-"Bundle 'minibufexpl.vim'
-"let g:miniBufExplorerMoreThanOne=1
-"let g:miniBufExplMapCTabSwitchBufs = 1
-
 
 filetype plugin indent on " required!
 
@@ -305,6 +323,7 @@ endfunction
 command! -complete=customlist,MSBuildCompletion -nargs=+ MSBuild :call MSBuild( <f-args> )
 
 " }}}
+
 
 if has("autocmd")
 
