@@ -15,6 +15,11 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'The-NERD-Commenter'
 Bundle 'matchit.zip'
+Bundle 'marijnh/tern_for_vim'
+let g:tern_show_argument_hints = 'on_move'
+
+Bundle 'ervandew/supertab'
+let g:SuperTabDefaultCompletionType = "context"
 
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
@@ -26,15 +31,17 @@ Bundle 'groenewege/vim-less.git'
 Bundle 'JSON.vim'
 Bundle 'ingydotnet/yaml-vim'
 
+" colorschemes
 Bundle 'sjl/badwolf'
-colorscheme badwolf
+Bundle 'Lokaltog/vim-distinguished'
 
 " Bundle AirLine {{{
 if has('python')
     Bundle 'bling/vim-airline'
+    set noshowmode
     if has("gui_running")
         let g:airline_powerline_fonts = 1
-        set guifont=Meslo\ LG\ M\ Regular\ for\ Powerline:h12
+        set guifont=Meslo\ LG\ M\ Regular\ for\ Powerline:h11
 
         " TODO: for windows, use Consolas_for_Powerline
     endif
@@ -45,7 +52,7 @@ endif
 Bundle 'mihaifm/vimpanel'
 let g:NERDTreeWinPos='left'
 let g:NERDTreeWinSize=40
-let g:VimpanelStorage=expand('$HOME') . '/' . '.vim/vimpanel' 
+let g:VimpanelStorage=expand('$HOME') . '/' . '.vim/vimpanel'
 cabbrev vp Vimpanel
 cabbrev vl VimpanelLoad
 cabbrev vc VimpanelCreate
@@ -116,21 +123,10 @@ nnoremap <leader>f :call FufFindByVimPanel()<cr>
 
 "Bundle 'minibufexpl.vim'
 "let g:miniBufExplorerMoreThanOne=1
-"let g:miniBufExplMapCTabSwitchBufs = 1 
+"let g:miniBufExplMapCTabSwitchBufs = 1
 
 
 filetype plugin indent on " required!
-
- "
- " Brief help
- " :BundleList          - list configured bundles
- " :BundleInstall(!)    - install(update) bundles
- " :BundleSearch(!) foo - search(or refresh cache first) for foo
- " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
- "
- " see :h vundle for more details or wiki for FAQ
- " NOTE: comments after Bundle command are not allowed..
-
 
 " }}}
 
@@ -156,6 +152,12 @@ set softtabstop=4
 set shiftround
 set expandtab
 
+if has('gui_running')
+    colorscheme badwolf
+else
+    colorscheme distinguished 
+endif
+
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
@@ -164,11 +166,10 @@ map Q gq
 inoremap <C-U> <C-G>u<C-U>
 
 " if the terminal has colors
-if &t_Co > 2 || has("gui_running") 
+if &t_Co > 2 || has("gui_running")
     syntax on
     set hlsearch
 endif
-    
 
 " Win32 specific {{{
 
@@ -313,12 +314,12 @@ if has("autocmd")
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
     " store folds on quit, restore them on load
-    au BufWinLeave .* if &modifiable | silent mkview | endif 
-    au BufWinEnter .* if &modifiable  | silent loadview | endif 
+    au BufWinLeave .* if &modifiable | silent mkview | endif
+    au BufWinEnter .* if &modifiable  | silent loadview | endif
 
     augroup set_filetypes
         au!
-        au BufRead,BufNewFile *.vm setfiletype velocity 
+        au BufRead,BufNewFile *.vm setfiletype velocity
         au BufRead,BufNewFile *.brail setfiletype html
         au BufRead,BufNewFile *.drxml setfiletype xml
         au BufRead,BufNewFile *.md setfiletype Markdown
@@ -335,6 +336,21 @@ if has("autocmd")
         au bufreadpost {.,_}vimrc setlocal foldmethod=marker
         au bufwritepost {.,_}vimrc source $MYVIMRC
     augroup END
+
+    augroup superTabSettings
+        autocmd FileType *
+            \ if &omnifunc != '' |
+            \   call SuperTabChain(&omnifunc, "<c-p>") |
+            \   call SuperTabSetDefaultCompletionType("<c-x><c-u>") |
+            \ endif
+    augroup END
+
+    augroup ternSettings
+        au!
+        au Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
+        au Filetype javascript nmap <buffer> <leader>h :TernDoc<cr>
+    augroup END
+
 endif
 
 
@@ -353,9 +369,6 @@ set hidden
 
 " ctags are cool. Let's make vim's support for them even more cool!
 set tags=./tags; "look for 'tags' file in parent directories
-nmap <leader>tt :TlistToggle<cr>
-nmap <leader>to :TlistOpen<cr>
-nmap <leader>tc :TlistClose<cr>
 
 nnoremap <Leader>g :e#<CR>
 nnoremap <Leader>1 :1b<CR>
