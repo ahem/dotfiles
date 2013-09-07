@@ -41,8 +41,9 @@ if (HasPythonVersion('2.7.5'))
     let g:tern_show_argument_hints = 'on_move'
 endif
 
-Bundle 'ervandew/supertab'
-let g:SuperTabDefaultCompletionType = "context"
+"Bundle 'ervandew/supertab'
+"let g:SuperTabDefaultCompletionType = "context"
+Bundle 'Valloric/YouCompleteMe'
 
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
@@ -91,48 +92,35 @@ Bundle 'L9'
 Bundle 'FuzzyFinder'
 let g:fuf_maxMenuWidth = 150
 let g:fuf_dataDir = '~/.vim/fuf-data'
-
+let g:fuf_coveragefile_exclude = '\v' .
+    \ '\.(o|exe|dll|bak|orig|swp|dll|idx|png|jpg|jpeg|pdb)$' .
+    \ '|(^|[/\\])' . '\.hg|\.git|\.bzr|node_modules' . '($|[/\\])'
 
 " FufFindByVimPanel function {{{
 function! FufFindByVimPanel()
     let dirlist = []
 
-    "save the original view
-    let origIgnore = &eventignore
-    let [origbuf, origview] = [bufnr("%"), winsaveview()]
-    let origFoldenable = &foldenable
-    set nofoldenable
-
-    " disable autocommands
+    "save original view + disable autocommands
+    let [origbuf, origview, origIgnore] = [bufnr("%"), winsaveview(), &eventignore]
     set eventignore=all
+
     try
-        bfirst
-        let startbuf = bufnr('%')
-        while 1
-            if &ft == 'vimpanel'
-                "catch output of g/^\/ (lines starting with /) into the matches variable
-                let filename = g:VimpanelStorage . '/' .  substitute(expand('%'), '\v^vimpanel-', '', '')
-                let dirlist = dirlist + readfile(filename)
-            endif
-
-            bnext
-            if bufnr('%') == startbuf
-                break
-            end
-        endwhile
+        bufdo if &ft == 'vimpanel'
+            \| let filename = g:VimpanelStorage . '/' .  substitute(expand('%'), '\v^vimpanel-', '', '')
+            \| let dirlist = dirlist + readfile(filename)
+        \| endif
+    catch
+        " nothing
     finally
-        "restore the original view
+        "restore original view + enable autocommands
         exec "buffer " . origbuf
-        let &foldenable = origFoldenable
         call winrestview(origview)
-
-        "enable autocommands again
         exec 'set eventignore=' . origIgnore
     endtry
 
     if len(dirlist) > 0
         call fuf#setOneTimeVariables(['g:fuf_coveragefile_globPatterns', map(dirlist, 'v:val . "**/*"')])
-                \ | FufCoverageFile
+        FufCoverageFile
     else
         FufFile
     endif
@@ -356,18 +344,11 @@ if has("autocmd")
         au bufwritepost {.,_}vimrc source $MYVIMRC
     augroup END
 
-    augroup superTabSettings
-        autocmd FileType *
-            \ if &omnifunc != '' |
-            \   call SuperTabChain(&omnifunc, "<c-p>") |
-            \   call SuperTabSetDefaultCompletionType("<c-x><c-u>") |
-            \ endif
-    augroup END
-
     augroup ternSettings
         au!
         au Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
-        au Filetype javascript nmap <buffer> <leader>h :TernDoc<cr>
+        au Filetype javascript nmap <buffer> <leader>th :TernDoc<cr>
+        au Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
     augroup END
 
 endif
