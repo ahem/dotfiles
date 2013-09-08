@@ -41,9 +41,9 @@ if (HasPythonVersion('2.7.5'))
     let g:tern_show_argument_hints = 'on_move'
 endif
 
-"Bundle 'ervandew/supertab'
-"let g:SuperTabDefaultCompletionType = "context"
-Bundle 'Valloric/YouCompleteMe'
+if HasPythonVersion('2.5.0') && (v:version > 703 || (v:version == 703 && has('patch584')))
+    Bundle 'Valloric/YouCompleteMe'
+endif
 
 Bundle 'Syntastic'
 let g:syntastic_auto_loc_list=1
@@ -161,7 +161,7 @@ set expandtab
 if has('gui_running')
     colorscheme badwolf
 else
-    colorscheme distinguished 
+    colorscheme distinguished
 endif
 
 " Don't use Ex mode, use Q for formatting
@@ -192,7 +192,7 @@ endif
 
 " Backups {{{
 
-set backup                        " enable backups
+set backup
 
 " Make Vim able to edit crontab files again.
 set backupskip=/tmp/*,/private/tmp/*"
@@ -209,6 +209,7 @@ if !isdirectory(expand(&directory))
 endif
 
 if has('persistent_undo')
+    set undofile
     set undodir=~/.vim/tmp/undo//     " undo files
     if !isdirectory(expand(&undodir))
         call mkdir(expand(&undodir), "p")
@@ -322,7 +323,7 @@ if has("autocmd")
 
     " store folds on quit, restore them on load
     au BufWinLeave .* if &modifiable | silent mkview | endif
-    au BufWinEnter .* if &modifiable  | silent loadview | endif
+    au BufWinEnter .* if &modifiable | silent loadview | endif
 
     augroup set_filetypes
         au!
@@ -353,16 +354,9 @@ if has("autocmd")
 
 endif
 
-
-" stupid danish keyboard, fix goto-mark-key
-nmap ½ `
-
 " map F1 to something sensible instead of help
 nmap <f1> :nohlsearch<cr>
 imap <f1> <esc>
-
-" map ctrl-space to omnicompletion
-inoremap <C-space> <C-x><C-o>
 
 " make buffers work better
 set hidden
