@@ -36,7 +36,7 @@ Bundle 'tpope/vim-fugitive.git'
 Bundle 'The-NERD-Commenter'
 Bundle 'matchit.zip'
 
-if (HasPythonVersion('2.7.5'))
+if (HasPythonVersion('2.7.2'))
     Bundle 'marijnh/tern_for_vim'
     let g:tern_show_argument_hints = 'on_move'
 endif
@@ -58,6 +58,7 @@ Bundle 'ingydotnet/yaml-vim'
 " colorschemes
 Bundle 'sjl/badwolf'
 Bundle 'Lokaltog/vim-distinguished'
+Bundle 'Solarized'
 
 " Bundle AirLine {{{
 if has('python')
@@ -93,7 +94,7 @@ Bundle 'FuzzyFinder'
 let g:fuf_maxMenuWidth = 150
 let g:fuf_dataDir = '~/.vim/fuf-data'
 let g:fuf_coveragefile_exclude = '\v' .
-    \ '\.(o|exe|dll|bak|orig|swp|dll|idx|png|jpg|jpeg|pdb)$' .
+    \ '\.(o|exe|dll|bak|orig|swp|dll|idx|png|jpg|jpeg|pdb|pyc)$' .
     \ '|(^|[/\\])' . '\.hg|\.git|\.bzr|node_modules' . '($|[/\\])'
 
 " FufFindByVimPanel function {{{
@@ -159,9 +160,10 @@ set shiftround
 set expandtab
 
 if has('gui_running')
-    colorscheme badwolf
+    colorscheme solarized
+    set background=light
 else
-    colorscheme distinguished
+    colorscheme desert
 endif
 
 " Don't use Ex mode, use Q for formatting
@@ -350,6 +352,13 @@ if has("autocmd")
         au Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
         au Filetype javascript nmap <buffer> <leader>th :TernDoc<cr>
         au Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
+    augroup END
+
+    augroup superTabSettings
+        au!
+        if exists( "g:loaded_youcompleteme" )
+            au Filetype python nmap <buffer> <C-]> :YcmCompleter GoToDefinition<CR>
+        endif
     augroup END
 
 endif
