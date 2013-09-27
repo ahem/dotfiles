@@ -54,6 +54,7 @@ Bundle 'Handlebars'
 Bundle 'groenewege/vim-less.git'
 Bundle 'JSON.vim'
 Bundle 'ingydotnet/yaml-vim'
+Bundle 'jdonaldson/vaxe.git'
 
 " colorschemes
 Bundle 'sjl/badwolf'
@@ -354,10 +355,10 @@ if has("autocmd")
         au Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
     augroup END
 
-    augroup superTabSettings
+    augroup youCompleteMeSettings
         au!
         if exists( "g:loaded_youcompleteme" )
-            au Filetype python nmap <buffer> <C-]> :YcmCompleter GoToDefinition<CR>
+            au Filetype python nmap <buffer> <C-]> :YcmCompleter GoToDefinitionElseDeclaration<CR>
         endif
     augroup END
 
