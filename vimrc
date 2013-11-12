@@ -35,6 +35,9 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'The-NERD-Commenter'
 Bundle 'matchit.zip'
+Bundle 'surround.vim'
+Bundle 'repeat.vim'
+Bundle 'justinmk/vim-sneak.git'
 
 if (HasPythonVersion('2.7.2'))
     Bundle 'marijnh/tern_for_vim'
@@ -141,10 +144,11 @@ filetype plugin indent on " required!
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-set history=50  " keep 50 lines of command line history
-set ruler       " show the cursor position all the time
-set showcmd     " display incomplete commands
-set incsearch   " do incremental searching
+set history=50   " keep 50 lines of command line history
+set ruler        " show the cursor position all the time
+set showcmd      " display incomplete commands
+set incsearch    " do incremental searching
+set noignorecase " do casesensitive searching (\c anywhere in pattern for insensitive)
 
 set guioptions-=T "remove toolbar
 set guioptions-=t "remove tearoff menus
