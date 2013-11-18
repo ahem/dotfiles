@@ -38,6 +38,8 @@ Bundle 'matchit.zip'
 Bundle 'surround.vim'
 Bundle 'repeat.vim'
 Bundle 'justinmk/vim-sneak.git'
+Bundle 'moll/vim-bbye'
+nmap <leader>q :Bdelete<CR>
 
 if (HasPythonVersion('2.7.2'))
     Bundle 'marijnh/tern_for_vim'
