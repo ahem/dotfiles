@@ -6,6 +6,7 @@ let mapleader = ","
 
 " function HasPythonVersion {{{
 function! HasPythonVersion(version)
+
     if !has('python')
         return 0
     endif
@@ -35,14 +36,18 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'The-NERD-Commenter'
 Bundle 'matchit.zip'
-Bundle 'surround.vim'
 Bundle 'repeat.vim'
+Bundle 'surround.vim'
+Bundle 'unimpaired.vim'
+
 Bundle 'justinmk/vim-sneak.git'
+vnoremap ,s s
+
 Bundle 'moll/vim-bbye'
 nmap <leader>q :Bdelete<CR>
 
 if (HasPythonVersion('2.7.2'))
-    Bundle 'marijnh/tern_for_vim'
+   Bundle 'marijnh/tern_for_vim'
     let g:tern_show_argument_hints = 'on_move'
 endif
 
