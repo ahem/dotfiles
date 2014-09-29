@@ -1,3 +1,4 @@
 nmap ,g :pcounterpart<cr>
 nmap ,l :xcmenucmd Go forward<cr>
 nmap ,h :xcmenucmd Go back<cr>
+nmap <f1> :xcmenucmd Quick Help for Selected Item<cr>
