@@ -4,6 +4,18 @@ set laststatus=2
 " set leader to comma, which is more accessible
 let mapleader = ","
 
+if has('nvim')
+    " neovim need python to be initialized
+    runtime! python setup.vim
+    let $VIMHOME = $HOME.'/.nvim'
+else
+    if has('win32') || has ('win64')
+        let $VIMHOME = $VIM.'/vimfiles'
+    else
+        let $VIMHOME = $HOME.'/.vim'
+    endif
+endif
+
 " function HasPythonVersion {{{
 function! HasPythonVersion(version)
 
@@ -28,13 +40,13 @@ endfunction
 " Plugins {{{
 
 " attempt to download the plugin manager, if it is missing
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !mkdir -p ~/.vim/autoload
-    silent !curl -fLo ~/.vim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if empty(glob($VIMHOME.'/autoload/plug.vim'))
+    silent! call mkdir($VIMHOME."/autoload", "p")
+    execute "!curl -fLo ".$VIMHOME."/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     autocmd VimEnter * PlugInstall
 endif
 
-call plug#begin('~/.vim/plugged')
+call plug#begin($VIMHOME.'/plugged')
 
 Plug 'tpope/vim-fugitive'
 Plug 'The-NERD-Commenter'
@@ -63,11 +75,10 @@ let g:syntastic_auto_loc_list=1
 
 " syntax highlighting
 Plug 'glsl.vim', { 'for': 'glsl' }
-Plug 'groenewege/vim-less'
-Plug 'JSON.vim'
-Plug 'ingydotnet/yaml-vim'
-Plug 'jdonaldson/vaxe'
-Plug 'mustache/vim-mustache-handlebars'
+Plug 'groenewege/vim-less', { 'for': 'less' }
+Plug 'JSON.vim', { 'for': 'json' }
+Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
+Plug 'mustache/vim-mustache-handlebars', { 'for': ['mustache', 'handlebars', 'html.handlebars'] }
 
 " colorschemes
 Plug 'sjl/badwolf'
@@ -91,7 +102,7 @@ endif
 Plug 'mihaifm/vimpanel'
 let g:NERDTreeWinPos='left'
 let g:NERDTreeWinSize=40
-let g:VimpanelStorage=expand('$HOME') . '/' . '.vim/vimpanel'
+let g:VimpanelStorage=$VIMHOME.'/vimpanel'
 cabbrev vp Vimpanel
 cabbrev vl VimpanelLoad
 cabbrev vc VimpanelCreate
@@ -106,7 +117,7 @@ cabbrev vsl VimpanelSessionLoad
 Plug 'L9'
 Plug 'FuzzyFinder'
 let g:fuf_maxMenuWidth = 150
-let g:fuf_dataDir = '~/.vim/fuf-data'
+let g:fuf_dataDir = $VIMHOME.'/fuf-data'
 let g:fuf_coveragefile_exclude = '\v' .
     \ '\.(o|exe|dll|bak|orig|swp|dll|idx|png|jpg|jpeg|pdb|pyc)$' .
     \ '|(^|[/\\])' . '\.hg|\.git|\.bzr|node_modules' . '($|[/\\])'
@@ -215,23 +226,27 @@ set backup
 " Make Vim able to edit crontab files again.
 set backupskip=/tmp/*,/private/tmp/*"
 
-set backupdir=~/.vim/tmp/backup// " backups
-set directory=~/.vim/tmp/swap//   " swap files
+let s:myBackupDir = $VIMHOME.'/tmp/backup'
+let s:mySwapDir = $VIMHOME.'/tmp/swap'
+let s:myUndoDir = $VIMHOME.'/tmp/undo'
 
 " Make those folders automatically if they don't already exist.
-if !isdirectory(expand(&backupdir))
-    call mkdir(expand(&backupdir), "p")
+if !isdirectory(expand(s:myBackupDir))
+    call mkdir(expand(s:myBackupDir), "p")
 endif
-if !isdirectory(expand(&directory))
-    call mkdir(expand(&directory), "p")
+if !isdirectory(expand(s:mySwapDir))
+    call mkdir(expand(s:mySwapDir))
 endif
+
+let &backupdir = s:myBackupDir."//"
+let &directory = s:mySwapDir."//"
 
 if has('persistent_undo')
     set undofile
-    set undodir=~/.vim/tmp/undo//     " undo files
-    if !isdirectory(expand(&undodir))
-        call mkdir(expand(&undodir), "p")
+    if !isdirectory(expand(s:myUndoDir))
+        call mkdir(expand(s:myUndoDir), "p")
     endif
+    let &undodir = s:myUndoDir."//"
 endif
 
 " }}}
