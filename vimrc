@@ -25,55 +25,58 @@ ENDPYTHON
 endfunction
 " }}}
 
-" Vundle {{{
+" Plugins {{{
 
-filetype off " required!
+" attempt to download the plugin manager, if it is missing
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !mkdir -p ~/.vim/autoload
+    silent !curl -fLo ~/.vim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall
+endif
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+call plug#begin('~/.vim/plugged')
 
-Bundle 'gmarik/vundle'
-Bundle 'tpope/vim-fugitive.git'
-Bundle 'The-NERD-Commenter'
-Bundle 'matchit.zip'
-Bundle 'repeat.vim'
-Bundle 'surround.vim'
-Bundle 'unimpaired.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'The-NERD-Commenter'
+Plug 'matchit.zip'
+Plug 'repeat.vim'
+Plug 'surround.vim'
+Plug 'unimpaired.vim'
 
-Bundle 'justinmk/vim-sneak.git'
+Plug 'justinmk/vim-sneak'
 vnoremap ,s s
 
-Bundle 'moll/vim-bbye'
+Plug 'moll/vim-bbye'
 nmap <leader>q :Bdelete<CR>
 
 if (HasPythonVersion('2.7.2'))
-   Bundle 'marijnh/tern_for_vim'
+   Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
     let g:tern_show_argument_hints = 'on_move'
 endif
 
 if HasPythonVersion('2.5.0') && (v:version > 703 || (v:version == 703 && has('patch584')))
-    Bundle 'Valloric/YouCompleteMe'
+    Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer --omnisharp-completer' }
 endif
 
-Bundle 'Syntastic'
+Plug 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
 " syntax highlighting
-Bundle 'glsl.vim'
-Bundle 'Handlebars'
-Bundle 'groenewege/vim-less.git'
-Bundle 'JSON.vim'
-Bundle 'ingydotnet/yaml-vim'
-Bundle 'jdonaldson/vaxe.git'
+Plug 'glsl.vim', { 'for': 'glsl' }
+Plug 'groenewege/vim-less'
+Plug 'JSON.vim'
+Plug 'ingydotnet/yaml-vim'
+Plug 'jdonaldson/vaxe'
+Plug 'mustache/vim-mustache-handlebars'
 
 " colorschemes
-Bundle 'sjl/badwolf'
-Bundle 'Lokaltog/vim-distinguished'
-Bundle 'Solarized'
+Plug 'sjl/badwolf'
+Plug 'Lokaltog/vim-distinguished'
+Plug 'Solarized'
 
-" Bundle AirLine {{{
+" Plug AirLine {{{
 if has('python')
-    Bundle 'bling/vim-airline'
+    Plug 'bling/vim-airline'
     set noshowmode
     if has("gui_running")
         let g:airline_powerline_fonts = 1
@@ -84,8 +87,8 @@ if has('python')
 endif
 " }}}
 
-" Bundle Vimpanel {{{
-Bundle 'mihaifm/vimpanel'
+" Plug Vimpanel {{{
+Plug 'mihaifm/vimpanel'
 let g:NERDTreeWinPos='left'
 let g:NERDTreeWinSize=40
 let g:VimpanelStorage=expand('$HOME') . '/' . '.vim/vimpanel'
@@ -98,10 +101,10 @@ cabbrev vss VimpanelSessionMake
 cabbrev vsl VimpanelSessionLoad
 " }}}
 
-" Bundle FuzzyFinder {{{
+" Plug FuzzyFinder {{{
 "L9 is required by FuzzyFinder
-Bundle 'L9'
-Bundle 'FuzzyFinder'
+Plug 'L9'
+Plug 'FuzzyFinder'
 let g:fuf_maxMenuWidth = 150
 let g:fuf_dataDir = '~/.vim/fuf-data'
 let g:fuf_coveragefile_exclude = '\v' .
@@ -144,7 +147,8 @@ nnoremap <leader>b :FufBuffer<cr>
 nnoremap <leader>f :call FufFindByVimPanel()<cr>
 " }}}
 
-filetype plugin indent on " required!
+
+call plug#end()
 
 " }}}
 
@@ -451,4 +455,44 @@ nmap <c-h> <c-w>h
 nmap <c-l> <c-w>l
 
 " }}}
+
+
+" wrap some text with {% translate %} tags for translation. Auto generates key
+" from first six words. Call with motion, fx. AddTranslationTag("it") for
+" inner tag or AddTranslationTag("i\"") for inner qoutes.
+function! AddTranslationTag(motion)
+    "grab tag contents
+    exec "normal d".a:motion
+
+    "generate key
+    let key = tolower(join(filter(split(@", '\W')[:5], '!empty(v:val)'), '_'))
+
+    "print opening tag
+    exec "normal i"."{% translate ".key." %}"
+
+    "put the text back
+    normal gp
+
+    "print end tag
+    exec "normal i"."{% endtranslate %}"
+endfunction 
+
+" wrap some text with {% trans %} tags for translation. Call with motion, fx.
+" AddJinjaTranslationTag("it") for inner tag or AddJinjaTranslationTag("i\"")
+" for inner qoutes.
+function! AddJinjaTranslationTag(motion)
+    "grab tag contents
+    exec "normal d".a:motion
+
+    "print opening tag
+    exec "normal i"."{% trans %}"
+
+    "put the text back
+    normal gp
+
+    "print end tag
+    exec "normal i"."{% endtrans %}"
+endfunction 
+
+
 

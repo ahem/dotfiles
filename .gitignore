@@ -1,6 +1,8 @@
 tmp
 view
-bundle
+plugged
 vimpanel
 fuf-data
 .DS_Store
+.netrwhist
+autoload/plug.vim
