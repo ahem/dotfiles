@@ -49,7 +49,7 @@ endif
 call plug#begin($VIMHOME.'/plugged')
 
 Plug 'tpope/vim-fugitive'
-Plug 'The-NERD-Commenter'
+Plug 'tpope/vim-commentary'
 Plug 'matchit.zip'
 Plug 'repeat.vim'
 Plug 'surround.vim'
