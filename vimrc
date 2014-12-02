@@ -66,6 +66,7 @@ Plug 'matchit.zip'
 Plug 'repeat.vim'
 Plug 'surround.vim'
 Plug 'unimpaired.vim'
+Plug 'jewes/Conque-Shell'
 
 Plug 'justinmk/vim-sneak'
 vnoremap ,s s
