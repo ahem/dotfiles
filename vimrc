@@ -4,17 +4,29 @@ set laststatus=2
 " set leader to comma, which is more accessible
 let mapleader = ","
 
+" platform specific initialisation {{{
 if has('nvim')
-    " neovim need python to be initialized
+    " neovim
     runtime! python setup.vim
     let $VIMHOME = $HOME.'/.nvim'
+    silent! mkdir(expand($VIMHOME), "p")
 else
     if has('win32') || has ('win64')
+        " Windows
         let $VIMHOME = $VIM.'/vimfiles'
+
+        if filereadable("$VIMRUNTIME/mswin.vim")
+            source $VIMRUNTIME/mswin.vim
+        endif
+        if &guifont !~? "powerline"
+            set guifont=Lucida_Console:h9
+        endif
     else
+        " Unix / OSX
         let $VIMHOME = $HOME.'/.vim'
     endif
 endif
+" }}}
 
 " function HasPythonVersion {{{
 function! HasPythonVersion(version)
@@ -42,7 +54,7 @@ endfunction
 " attempt to download the plugin manager, if it is missing
 if empty(glob($VIMHOME.'/autoload/plug.vim'))
     silent! call mkdir($VIMHOME."/autoload", "p")
-    execute "!curl -fLo ".$VIMHOME."/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    silent! execute "!curl -fLo ".$VIMHOME."/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     autocmd VimEnter * PlugInstall
 endif
 
@@ -73,6 +85,8 @@ endif
 Plug 'Syntastic'
 let g:syntastic_auto_loc_list=1
 
+Plug 'christoomey/vim-tmux-navigator'
+
 " syntax highlighting
 Plug 'glsl.vim', { 'for': 'glsl' }
 Plug 'groenewege/vim-less', { 'for': 'less' }
@@ -81,6 +95,7 @@ Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
 Plug 'mustache/vim-mustache-handlebars', { 'for': ['mustache', 'handlebars', 'html.handlebars'] }
 
 " colorschemes
+set t_Co=256
 Plug 'sjl/badwolf'
 Plug 'Lokaltog/vim-distinguished'
 Plug 'Solarized'
@@ -190,7 +205,8 @@ if has('gui_running')
     colorscheme solarized
     set background=light
 else
-    colorscheme desert
+    set mouse=a          "enable mouse in console
+    colorscheme badwolf
 endif
 
 " Don't use Ex mode, use Q for formatting
@@ -206,19 +222,6 @@ if &t_Co > 2 || has("gui_running")
     set hlsearch
 endif
 
-" Win32 specific {{{
-
-if has("win32")
-    if filereadable("$VIMRUNTIME/mswin.vim")
-        source $VIMRUNTIME/mswin.vim
-    endif
-    if &guifont !~? "powerline"
-        set guifont=Lucida_Console:h9
-    endif
-endif
-
-" }}}
-
 " Backups {{{
 
 set backup
@@ -227,26 +230,18 @@ set backup
 set backupskip=/tmp/*,/private/tmp/*"
 
 let s:myBackupDir = $VIMHOME.'/tmp/backup'
-let s:mySwapDir = $VIMHOME.'/tmp/swap'
-let s:myUndoDir = $VIMHOME.'/tmp/undo'
-
-" Make those folders automatically if they don't already exist.
-if !isdirectory(expand(s:myBackupDir))
-    call mkdir(expand(s:myBackupDir), "p")
-endif
-if !isdirectory(expand(s:mySwapDir))
-    call mkdir(expand(s:mySwapDir))
-endif
-
+silent! call mkdir(expand(s:myBackupDir), "p")
 let &backupdir = s:myBackupDir."//"
+
+let s:mySwapDir = $VIMHOME.'/tmp/swap'
+silent! call mkdir(expand(s:mySwapDir), "p")
 let &directory = s:mySwapDir."//"
 
 if has('persistent_undo')
-    set undofile
-    if !isdirectory(expand(s:myUndoDir))
-        call mkdir(expand(s:myUndoDir), "p")
-    endif
+    let s:myUndoDir = $VIMHOME.'/tmp/undo'
+    silent! call mkdir(expand(s:myUndoDir), "p")
     let &undodir = s:myUndoDir."//"
+    set undofile
 endif
 
 " }}}
@@ -508,6 +503,4 @@ function! AddJinjaTranslationTag(motion)
     "print end tag
     exec "normal i"."{% endtrans %}"
 endfunction 
-
-
 
