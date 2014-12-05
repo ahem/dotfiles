@@ -433,7 +433,7 @@ if has("autocmd")
     augroup ternSettings
         au!
         au Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
-        au Filetype javascript nmap <buffer> <leader>th :TernDoc<cr>
+        au Filetype javascript nmap <buffer> K :TernDoc<cr>
         au Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
     augroup END
 
