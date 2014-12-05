@@ -67,6 +67,7 @@ Plug 'repeat.vim'
 Plug 'surround.vim'
 Plug 'unimpaired.vim'
 Plug 'jewes/Conque-Shell'
+Plug 'jimsei/winresizer'
 
 Plug 'justinmk/vim-sneak'
 vnoremap ,s s
