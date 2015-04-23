@@ -22,6 +22,10 @@ rm ~/.vimrc
 ln vimrc ~/.vimrc
  ```
 
+## NeoVim
+
+To fix <c-h> link `xterm-256color.ti` into `~/xterm-256color.ti`. See https://github.com/neovim/neovim/issues/2048#issuecomment-78045837
+
 ## Ideas
 
 Completion:
