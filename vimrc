@@ -66,7 +66,6 @@ Plug 'matchit.zip'
 Plug 'repeat.vim'
 Plug 'surround.vim'
 Plug 'unimpaired.vim'
-Plug 'jewes/Conque-Shell'
 Plug 'jimsei/winresizer'
 
 Plug 'justinmk/vim-sneak'
@@ -86,8 +85,6 @@ endif
 
 Plug 'Syntastic'
 let g:syntastic_auto_loc_list=1
-
-Plug 'christoomey/vim-tmux-navigator'
 
 " syntax highlighting
 Plug 'glsl.vim', { 'for': 'glsl' }
@@ -128,51 +125,31 @@ cabbrev vr VimpanelRemove
 cabbrev vss VimpanelSessionMake
 cabbrev vsl VimpanelSessionLoad
 " }}}
+"
+" Plug FZF {{{
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 
-" Plug FuzzyFinder {{{
-"L9 is required by FuzzyFinder
-Plug 'L9'
-Plug 'FuzzyFinder'
-let g:fuf_maxMenuWidth = 150
-let g:fuf_dataDir = $VIMHOME.'/fuf-data'
-let g:fuf_coveragefile_exclude = '\v' .
-    \ '\.(o|exe|dll|bak|orig|swp|dll|idx|png|jpg|jpeg|pdb|pyc)$' .
-    \ '|(^|[/\\])' . '\.hg|\.git|\.bzr|node_modules' . '($|[/\\])'
+nnoremap <silent> <leader>f :FZF<cr>
 
-" FufFindByVimPanel function {{{
-function! FufFindByVimPanel()
-    let dirlist = []
-
-    "save original view + disable autocommands
-    let [origbuf, origview, origIgnore] = [bufnr("%"), winsaveview(), &eventignore]
-    set eventignore=all
-
-    try
-        bufdo if &ft == 'vimpanel'
-            \| let filename = g:VimpanelStorage . '/' .  substitute(expand('%'), '\v^vimpanel-', '', '')
-            \| let dirlist = dirlist + readfile(filename)
-        \| endif
-    catch
-        " nothing
-    finally
-        "restore original view + enable autocommands
-        exec "buffer " . origbuf
-        call winrestview(origview)
-        exec 'set eventignore=' . origIgnore
-    endtry
-
-    if len(dirlist) > 0
-        call fuf#setOneTimeVariables(['g:fuf_coveragefile_globPatterns', map(dirlist, 'v:val . "**/*"')])
-        FufCoverageFile
-    else
-        FufFile
-    endif
-
+" List of buffers
+function! s:buflist()
+  redir => ls
+  silent ls
+  redir END
+  return split(ls, '\n')
 endfunction
-" }}}
 
-nnoremap <leader>b :FufBuffer<cr>
-nnoremap <leader>f :call FufFindByVimPanel()<cr>
+function! s:bufopen(e)
+  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
+endfunction
+
+nnoremap <silent> <Leader>b :call fzf#run({
+\   'source':  reverse(<sid>buflist()),
+\   'sink':    function('<sid>bufopen'),
+\   'options': '+m',
+\   'down':    len(<sid>buflist()) + 2
+\ })<CR>
+
 " }}}
 
 
@@ -207,8 +184,14 @@ if has('gui_running')
     colorscheme solarized
     set background=light
 else
+    set ttyfast          " make terminal refreshing fast, instead refresh character for character.
     set mouse=a          "enable mouse in console
+    set ttymouse=xterm2
+    if !has('nvim')
+        set ttyscroll=3      " Prefer redraw to scrolling for more than 3 lines, prevent glitches when you're scrolling.
+    endif
     colorscheme badwolf
+
 endif
 
 " Don't use Ex mode, use Q for formatting
@@ -248,41 +231,6 @@ endif
 
 " }}}
 
-" Diff stuff {{{
-
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
-endif
-
-set diffexpr=MyDiff()
-function! MyDiff()
-    let opt = '-a --binary '
-    if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-    if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-    let arg1 = v:fname_in
-    if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-    let arg2 = v:fname_new
-    if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-    let arg3 = v:fname_out
-    if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-    let eq = ''
-    if $VIMRUNTIME =~ ' '
-        if &sh =~ '\<cmd'
-            let cmd = '""' . $VIMRUNTIME . '\diff"'
-            let eq = '"'
-        else
-            let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-        endif
-    else
-        let cmd = $VIMRUNTIME . '\diff'
-    endif
-    silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
-
-" }}}
 
 " MSBuild {{{
 
@@ -436,6 +384,7 @@ if has("autocmd")
         au Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
         au Filetype javascript nmap <buffer> K :TernDoc<cr>
         au Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
+        au Filetype javascript nmap <buffer> <leader>td :TernDefPreview<cr>
     augroup END
 
     augroup youCompleteMeSettings
@@ -465,6 +414,12 @@ nmap <c-j> <c-w>j
 nmap <c-k> <c-w>k
 nmap <c-h> <c-w>h
 nmap <c-l> <c-w>l
+
+if has('nvim')
+    " fix until https://github.com/neovim/neovim/issues/2048 is closed
+    nmap <BS> <C-W>h
+    tnoremap <esc><esc> <c-\><c-n>
+endif
 
 " }}}
 
