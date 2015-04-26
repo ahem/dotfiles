@@ -129,18 +129,16 @@ cabbrev vsl VimpanelSessionLoad
 " Plug FZF {{{
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 
-nnoremap <silent> <leader>f :FZF<cr>
-
 " List of buffers
 function! s:buflist()
-  redir => ls
-  silent ls
-  redir END
-  return split(ls, '\n')
+    redir => l:ls
+    silent ls
+    redir END
+    return split(l:ls, '\n')
 endfunction
 
 function! s:bufopen(e)
-  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
+    execute 'buffer' matchstr(a:e, '^[ 0-9]*')
 endfunction
 
 nnoremap <silent> <Leader>b :call fzf#run({
@@ -149,6 +147,46 @@ nnoremap <silent> <Leader>b :call fzf#run({
 \   'options': '+m',
 \   'down':    len(<sid>buflist()) + 2
 \ })<CR>
+
+function! s:vimpanelDirList()
+    let l:dirlist = []
+
+    " save original view + disable autocommands
+    let [origbuf, origview, origIgnore] = [bufnr("%"), winsaveview(), &eventignore]
+    set eventignore=all
+
+    try
+        bufdo if &ft == 'vimpanel'
+                    \| let l:filename = g:VimpanelStorage . '/' .  substitute(expand('%'), '\v^vimpanel-', '', '')
+                    \| let l:dirlist = l:dirlist + readfile(l:filename)
+                \| endif
+    catch
+        let l:dirlist = []
+    finally
+        " restore original view + enable autocommands
+        exec "buffer " . origbuf
+        call winrestview(origview)
+        exec 'set eventignore=' . origIgnore
+    endtry
+
+    return l:dirlist
+endfunction
+
+function! s:vimpanelSearch()
+    let l:dirlist = s:vimpanelDirList()
+    if len(l:dirlist) > 0
+        call fzf#run({
+                    \'source': 'ag -l -g "" ' . '"' . join(l:dirlist, '" "') . '"',
+                    \'sink': 'e',
+                    \'options': '+m',
+                    \'down': '40%'
+                \})
+    else
+        exec ":FZF"
+    endif
+endfunction
+
+nnoremap <silent> <Leader>f :call <sid>vimpanelSearch()<cr>
 
 " }}}
 
@@ -349,48 +387,51 @@ hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
 
 if has("autocmd")
 
-    autocmd FileType text setlocal textwidth=78
+    augroup stuff
+        autocmd!
+        autocmd FileType text setlocal textwidth=78
 
-    " When editing a file, always jump to the last known cursor position.
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+        " When editing a file, always jump to the last known cursor position.
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
-    " store folds on quit, restore them on load
-    au BufWinLeave .* if &modifiable | silent mkview | endif
-    au BufWinEnter .* if &modifiable | silent loadview | endif
+        " store folds on quit, restore them on load
+        autocmd BufWinLeave .* if &modifiable | silent mkview | endif
+        autocmd BufWinEnter .* if &modifiable | silent loadview | endif
+    augroup END
 
     augroup set_filetypes
-        au!
-        au BufRead,BufNewFile *.vm setfiletype velocity
-        au BufRead,BufNewFile *.brail setfiletype html
-        au BufRead,BufNewFile *.drxml setfiletype xml
-        au BufRead,BufNewFile *.md setfiletype Markdown
-        au BufRead,BufNewFile *.emberhbs setfiletype handlebars
-        au BufRead,BufNewFile *.{frag,vert,fp,vp,glsl} setfiletype glsl
-        au BufRead,BufNewFile *.json setfiletype json
+        autocmd!
+        autocmd BufRead,BufNewFile *.vm setfiletype velocity
+        autocmd BufRead,BufNewFile *.brail setfiletype html
+        autocmd BufRead,BufNewFile *.drxml setfiletype xml
+        autocmd BufRead,BufNewFile *.md setfiletype Markdown
+        autocmd BufRead,BufNewFile *.emberhbs setfiletype handlebars
+        autocmd BufRead,BufNewFile *.{frag,vert,fp,vp,glsl} setfiletype glsl
+        autocmd BufRead,BufNewFile *.json setfiletype json
 
-        au Filetype perl compiler perl
-        au Filetype perl nmap <buffer> <F5> :make<cr>
-        au Filetype perl nmap <buffer> <C-F5> :!perl -I "%:p:h" "%:p"<cr>
+        autocmd Filetype perl compiler perl
+        autocmd Filetype perl nmap <buffer> <F5> :make<cr>
+        autocmd Filetype perl nmap <buffer> <C-F5> :!perl -I "%:p:h" "%:p"<cr>
     augroup END
 
     augroup vimrcEx
-        au!
-        au bufreadpost {.,_}vimrc setlocal foldmethod=marker
-        au bufwritepost {.,_}vimrc source $MYVIMRC
+        autocmd!
+        autocmd bufreadpost {.,_}vimrc setlocal foldmethod=marker
+        autocmd bufwritepost {.,_}vimrc source $MYVIMRC
     augroup END
 
     augroup ternSettings
-        au!
-        au Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
-        au Filetype javascript nmap <buffer> K :TernDoc<cr>
-        au Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
-        au Filetype javascript nmap <buffer> <leader>td :TernDefPreview<cr>
+        autocmd!
+        autocmd Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
+        autocmd Filetype javascript nmap <buffer> K :TernDoc<cr>
+        autocmd Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
+        autocmd Filetype javascript nmap <buffer> <leader>td :TernDefPreview<cr>
     augroup END
 
     augroup youCompleteMeSettings
-        au!
+        autocmd!
         if exists( "g:loaded_youcompleteme" )
-            au Filetype python nmap <buffer> <C-]> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+            autocmd Filetype python nmap <buffer> <C-]> :YcmCompleter GoToDefinitionElseDeclaration<CR>
         endif
     augroup END
 
