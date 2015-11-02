@@ -67,6 +67,7 @@ Plug 'repeat.vim'
 Plug 'surround.vim'
 Plug 'unimpaired.vim'
 Plug 'jimsei/winresizer'
+Plug 'reedes/vim-pencil'
 
 Plug 'justinmk/vim-sneak'
 vnoremap ,s s
@@ -75,8 +76,9 @@ Plug 'moll/vim-bbye'
 nmap <leader>q :Bdelete<CR>
 
 if (HasPythonVersion('2.7.2'))
-   Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
-    let g:tern_show_argument_hints = 'on_move'
+   Plug 'marijnh/tern_for_vim', { 'do': 'npm install; npm update' }
+    " let g:tern_show_argument_hints = 'on_move'
+    let g:tern_show_argument_hints = 0
 endif
 
 if HasPythonVersion('2.5.0') && (v:version > 703 || (v:version == 703 && has('patch584')))
@@ -92,6 +94,7 @@ Plug 'groenewege/vim-less', { 'for': 'less' }
 Plug 'JSON.vim', { 'for': 'json' }
 Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
 Plug 'mustache/vim-mustache-handlebars', { 'for': ['mustache', 'handlebars', 'html.handlebars'] }
+Plug 'othree/yajs.vim', { 'for': ['javascript'] }
 
 " colorschemes
 set t_Co=256
@@ -224,12 +227,11 @@ if has('gui_running')
 else
     set ttyfast          " make terminal refreshing fast, instead refresh character for character.
     set mouse=a          "enable mouse in console
-    set ttymouse=xterm2
     if !has('nvim')
         set ttyscroll=3      " Prefer redraw to scrolling for more than 3 lines, prevent glitches when you're scrolling.
+        set ttymouse=xterm2 " this aparently doesn't work in neovim anymore??
     endif
     colorscheme badwolf
-
 endif
 
 " Don't use Ex mode, use Q for formatting
@@ -443,6 +445,10 @@ imap <f1> <esc>
 
 " make buffers work better
 set hidden
+if v:version >= 700
+  au BufLeave * let b:winview = winsaveview()
+  au BufEnter * if(exists('b:winview') && &ft != 'vimpanel' ) | call winrestview(b:winview) | endif
+endif
 
 " ctags are cool. Let's make vim's support for them even more cool!
 set tags=./tags; "look for 'tags' file in parent directories
@@ -457,9 +463,8 @@ nmap <c-h> <c-w>h
 nmap <c-l> <c-w>l
 
 if has('nvim')
-    " fix until https://github.com/neovim/neovim/issues/2048 is closed
-    nmap <BS> <C-W>h
     tnoremap <esc><esc> <c-\><c-n>
+    let g:terminal_scrollback_buffer_size = 10000
 endif
 
 " }}}
