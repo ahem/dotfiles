@@ -1,8 +1,8 @@
 set nocompatible
 set laststatus=2
 
-" set leader to comma, which is more accessible
-let mapleader = ","
+" set leader to space, which is more accessible
+let mapleader = " "
 
 " platform specific initialisation {{{
 if has('nvim')
@@ -85,8 +85,11 @@ if HasPythonVersion('2.5.0') && (v:version > 703 || (v:version == 703 && has('pa
     Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer --omnisharp-completer' }
 endif
 
-Plug 'Syntastic'
-let g:syntastic_auto_loc_list=1
+" Plug 'Syntastic'
+" let g:syntastic_auto_loc_list=1
+Plug 'benekastah/neomake'
+let g:neomake_javascript_enabled_makers = ['eslint']
+
 
 " syntax highlighting
 Plug 'glsl.vim', { 'for': 'glsl' }
@@ -95,6 +98,8 @@ Plug 'JSON.vim', { 'for': 'json' }
 Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
 Plug 'mustache/vim-mustache-handlebars', { 'for': ['mustache', 'handlebars', 'html.handlebars'] }
 Plug 'othree/yajs.vim', { 'for': ['javascript'] }
+Plug 'mxw/vim-jsx', { 'for': ['javascript'] }
+let g:jsx_ext_required = 0
 
 " colorschemes
 set t_Co=256
@@ -181,8 +186,7 @@ function! s:vimpanelSearch()
         call fzf#run({
                     \'source': 'ag -l -g "" ' . '"' . join(l:dirlist, '" "') . '"',
                     \'sink': 'e',
-                    \'options': '+m',
-                    \'down': '40%'
+                    \'options': '+m'
                 \})
     else
         exec ":FZF"
@@ -414,20 +418,24 @@ if has("autocmd")
         autocmd Filetype perl compiler perl
         autocmd Filetype perl nmap <buffer> <F5> :make<cr>
         autocmd Filetype perl nmap <buffer> <C-F5> :!perl -I "%:p:h" "%:p"<cr>
+
+        autocmd BufWritePost *.js Neomake
     augroup END
 
     augroup vimrcEx
         autocmd!
         autocmd bufreadpost {.,_}vimrc setlocal foldmethod=marker
+        autocmd bufreadpost init.vim setlocal foldmethod=marker
         autocmd bufwritepost {.,_}vimrc source $MYVIMRC
+        autocmd bufwritepost init.vim source $MYVIMRC
     augroup END
 
     augroup ternSettings
         autocmd!
-        autocmd Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
-        autocmd Filetype javascript nmap <buffer> K :TernDoc<cr>
-        autocmd Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
-        autocmd Filetype javascript nmap <buffer> <leader>td :TernDefPreview<cr>
+        autocmd Filetype javascript,jsx nmap <buffer> <C-]> :TernDef<CR>
+        autocmd Filetype javascript,jsx nmap <buffer> K :TernDoc<cr>
+        autocmd Filetype javascript,jsx nmap <buffer> <leader>tt :TernType<cr>
+        autocmd Filetype javascript,jsx nmap <buffer> <leader>td :TernDefPreview<cr>
     augroup END
 
     augroup youCompleteMeSettings
