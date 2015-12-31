@@ -390,6 +390,53 @@ hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
 
 " }}}
 
+" NASMKeywordLookup (shift-K for .asm files) {{{
+function! NASMKeywordLookup(keyword)
+
+    let l:keyword = match(a:keyword, '\vj\a+') >= 0 ? 'Jcc' : toupper(a:keyword)
+
+    let l:url = 'http://x86.renejeschke.de/' .
+        \ system('curl -s http://x86.renejeschke.de/ | grep a\ href.*\\b' . l:keyword .
+        \ '\\b | head -1 | sed "s/.*href=\"\(.*\)\".*/\1/"') 
+    let l:url = substitute(l:url, '\n\+$', '', '')
+
+    " open buffer
+    let l:bufname = "[Assembler Help from x86.renejeschke.de]"
+    let l:old_switchbuf = &switchbuf
+    try
+        "try to select old buffer
+        set switchbuf=useopen
+        execute 'sbuf' "\\" . l:bufname
+        :%d
+    catch
+        "create a new scratch buffer
+        :new
+        exec ":file " . l:bufname
+        :setlocal buftype=nofile
+        :setlocal bufhidden=hide
+        :setlocal noswapfile
+        :nmap <buffer> K :exec ":call NASMKeywordLookup('" . expand("<cword>") . "')"<CR>
+    finally
+        let &switchbuf = l:old_switchbuf
+    endtry  
+
+    "lookup keyword on x86.renejeschke.de with DuckDuckGo and grep description section of result
+    let l:cmd = "curl -s '" . l:url . "' | html2text -nobs -ascii"
+    exec "read!". l:cmd
+
+    :1,6d "delete empty lines
+    :0
+endfunction
+
+command! -nargs=1 NASMKeywordLookup :call NASMKeywordLookup( <f-args> )
+
+augroup nasmKeywordLookup
+    autocmd!
+    autocmd FileType asm nmap <buffer> K :exec ":silent call NASMKeywordLookup('" . expand("<cword>") . "')"<CR>
+augroup END
+
+"}}}
+
 
 if has("autocmd")
 
