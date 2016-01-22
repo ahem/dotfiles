@@ -37,9 +37,11 @@ SublimeText features:
 - Mark multiple?? https://github.com/adinapoli/vim-markmultiple/
 - ...or: https://github.com/hlissner/vim-multiedit (looks better)
 
+
 Stuff:
 - Gundo looks cool: http://sjl.bitbucket.org/gundo.vim/
 - vimscript unit testing: https://code.google.com/p/lh-vim/wiki/UT
+- Nice search thing with multi-file replace: http://www.vim.org/scripts/script.php?script_id=5220
 
 # TODO
 - actually start using Fugitive - installing it is not enough!!!
