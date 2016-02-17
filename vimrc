@@ -107,6 +107,18 @@ Plug 'sjl/badwolf'
 Plug 'Lokaltog/vim-distinguished'
 Plug 'Solarized'
 
+" " Plug AirLine {{{
+" if has('python')
+"     Plug 'bling/vim-airline'
+"     set noshowmode
+"     if has("gui_running")
+"         let g:airline_powerline_fonts = 1
+"         set guifont=Meslo\ LG\ M\ Regular\ for\ Powerline:h11
+" 
+"         " TODO: for windows, use Consolas_for_Powerline
+"     endif
+" endif
+" " }}}
 
 " Plug NERDTree {{{
 
