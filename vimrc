@@ -8,7 +8,7 @@ let mapleader = " "
 if has('nvim')
     " neovim
     runtime! python setup.vim
-    let $VIMHOME = $HOME.'/.nvim'
+    let $VIMHOME = $XDG_CONFIG_HOME.'/nvim'
     silent! mkdir(expand($VIMHOME), "p")
 else
     if has('win32') || has ('win64')
@@ -30,6 +30,7 @@ endif
 
 " function HasPythonVersion {{{
 function! HasPythonVersion(version)
+
 
     if !has('python')
         return 0
@@ -87,6 +88,7 @@ endif
 
 " Plug 'Syntastic'
 " let g:syntastic_auto_loc_list=1
+
 Plug 'benekastah/neomake'
 let g:neomake_javascript_enabled_makers = ['eslint']
 
@@ -98,8 +100,6 @@ Plug 'JSON.vim', { 'for': 'json' }
 Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
 Plug 'mustache/vim-mustache-handlebars', { 'for': ['mustache', 'handlebars', 'html.handlebars'] }
 Plug 'othree/yajs.vim', { 'for': ['javascript'] }
-Plug 'mxw/vim-jsx', { 'for': ['javascript'] }
-let g:jsx_ext_required = 0
 
 " colorschemes
 set t_Co=256
@@ -107,33 +107,19 @@ Plug 'sjl/badwolf'
 Plug 'Lokaltog/vim-distinguished'
 Plug 'Solarized'
 
-" Plug AirLine {{{
-if has('python')
-    Plug 'bling/vim-airline'
-    set noshowmode
-    if has("gui_running")
-        let g:airline_powerline_fonts = 1
-        set guifont=Meslo\ LG\ M\ Regular\ for\ Powerline:h11
 
-        " TODO: for windows, use Consolas_for_Powerline
-    endif
-endif
+" Plug NERDTree {{{
+
+Plug 'scrooloose/nerdtree'
+let NERDTreeBookmarksSort = 0
+let NERDTreeShowBookmarks = 1
+let NERDTreeMinimalUI = 1
+
+nmap <leader>nt :NERDTreeToggle<cr>
+nmap <leader>nf :NERDTreeFind<cr>
+nmap <leader>nb :NERDTreeFromBookmark<space>
 " }}}
 
-" Plug Vimpanel {{{
-Plug 'mihaifm/vimpanel'
-let g:NERDTreeWinPos='left'
-let g:NERDTreeWinSize=40
-let g:VimpanelStorage=$VIMHOME.'/vimpanel'
-cabbrev vp Vimpanel
-cabbrev vl VimpanelLoad
-cabbrev vc VimpanelCreate
-cabbrev ve VimpanelEdit
-cabbrev vr VimpanelRemove
-cabbrev vss VimpanelSessionMake
-cabbrev vsl VimpanelSessionLoad
-" }}}
-"
 " Plug FZF {{{
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 
@@ -149,12 +135,7 @@ function! s:bufopen(e)
     execute 'buffer' matchstr(a:e, '^[ 0-9]*')
 endfunction
 
-nnoremap <silent> <Leader>b :call fzf#run({
-\   'source':  reverse(<sid>buflist()),
-\   'sink':    function('<sid>bufopen'),
-\   'options': '+m',
-\   'down':    len(<sid>buflist()) + 2
-\ })<CR>
+nnoremap <silent> <Leader>b :call fzf#run({'source': reverse(<sid>buflist()), 'sink': function('<sid>bufopen'), 'down': len(<sid>buflist()) + 2 })<cr>
 
 function! s:vimpanelDirList()
     let l:dirlist = []
@@ -181,20 +162,24 @@ function! s:vimpanelDirList()
 endfunction
 
 function! s:vimpanelSearch()
-    let l:dirlist = s:vimpanelDirList()
+    let l:dirlist = copy(s:vimpanelDirList())
+    let l:source = 'ag -l -g "" ' . '"' . join(l:dirlist, '" "') . '"'
     if len(l:dirlist) > 0
-        call fzf#run({
-                    \'source': 'ag -l -g "" ' . '"' . join(l:dirlist, '" "') . '"',
-                    \'sink': 'e',
-                    \'options': '+m'
-                \})
+        call fzf#run({'source': l:source, 'sink': 'e', 'options': '+m' })
     else
         exec ":FZF"
     endif
 endfunction
 
-nnoremap <silent> <Leader>f :call <sid>vimpanelSearch()<cr>
+function! s:nerdTreeSearch()
+    let l:list = map(copy(g:NERDTreeBookmark.Bookmarks()), 'v:val.path.str()')
+    call map(l:list, 'substitute(v:val, "\\c^' . getcwd() . '/", "", "")')
+    let l:source = 'ag -l -g "" "' . join(l:list, '" "') . '"'
+    call fzf#run({'source': l:source, 'sink': 'e'})
+endfunction
 
+nnoremap <silent> <Leader>x :call <sid>nerdTreeSearch()<cr>
+nnoremap <silent> <Leader>f :call <sid>vimpanelSearch()<cr>
 " }}}
 
 
@@ -213,7 +198,9 @@ set noignorecase " do casesensitive searching (\c anywhere in pattern for insens
 
 set guioptions-=T "remove toolbar
 set guioptions-=t "remove tearoff menus
-set encoding=utf-8
+if &encoding != 'utf-8'
+    set encoding=utf-8
+endif
 set visualbell
 set autoindent
 
@@ -479,10 +466,10 @@ if has("autocmd")
 
     augroup ternSettings
         autocmd!
-        autocmd Filetype javascript,jsx nmap <buffer> <C-]> :TernDef<CR>
-        autocmd Filetype javascript,jsx nmap <buffer> K :TernDoc<cr>
-        autocmd Filetype javascript,jsx nmap <buffer> <leader>tt :TernType<cr>
-        autocmd Filetype javascript,jsx nmap <buffer> <leader>td :TernDefPreview<cr>
+        autocmd Filetype javascript nmap <buffer> <C-]> :TernDef<CR>
+        autocmd Filetype javascript nmap <buffer> K :TernDoc<cr>
+        autocmd Filetype javascript nmap <buffer> <leader>tt :TernType<cr>
+        autocmd Filetype javascript nmap <buffer> <leader>td :TernDefPreview<cr>
     augroup END
 
     augroup youCompleteMeSettings
@@ -491,6 +478,7 @@ if has("autocmd")
             autocmd Filetype python nmap <buffer> <C-]> :YcmCompleter GoToDefinitionElseDeclaration<CR>
         endif
     augroup END
+
 
 endif
 
