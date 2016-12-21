@@ -1,5 +1,7 @@
 set nocompatible
 set laststatus=2
+set splitright
+set splitbelow
 
 " set leader to space, which is more accessible
 let mapleader = " "
@@ -90,6 +92,8 @@ endif
 " let g:syntastic_auto_loc_list=1
 
 Plug 'benekastah/neomake'
+Plug 'benjie/neomake-local-eslint.vim'
+
 let g:neomake_javascript_enabled_makers = ['eslint']
 
 
@@ -105,7 +109,12 @@ Plug 'othree/yajs.vim', { 'for': ['javascript'] }
 set t_Co=256
 Plug 'sjl/badwolf'
 Plug 'Lokaltog/vim-distinguished'
-Plug 'Solarized'
+if has('nvim')
+    set termguicolors
+    Plug 'frankier/neovim-colors-solarized-truecolor-only'
+else
+    Plug 'Solarized'
+endif
 
 " " Plug AirLine {{{
 " if has('python')
@@ -225,6 +234,7 @@ set shiftround
 set expandtab
 
 if has('gui_running')
+    autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=lightgreen
     colorscheme solarized
     set background=light
 else
@@ -234,7 +244,9 @@ else
         set ttyscroll=3      " Prefer redraw to scrolling for more than 3 lines, prevent glitches when you're scrolling.
         set ttymouse=xterm2 " this aparently doesn't work in neovim anymore??
     endif
-    colorscheme badwolf
+    autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+    set background=dark
+    colorscheme solarized
 endif
 
 " Don't use Ex mode, use Q for formatting
@@ -491,6 +503,12 @@ if has("autocmd")
         endif
     augroup END
 
+    augroup HighlightingSettings
+        autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=lightgreen
+        autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+        autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+        autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+    augroup END
 
 endif
 
@@ -561,4 +579,9 @@ function! AddJinjaTranslationTag(motion)
     "print end tag
     exec "normal i"."{% endtrans %}"
 endfunction 
+
+command! -nargs=+ ExecInSplit :vsplit | term "<q-args>"
+
+
+
 

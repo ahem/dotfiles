@@ -15,6 +15,7 @@ force_more_message = You block its attack
 
 # make chunks less annoying
 auto_eat_chunks = true
+explore_auto_rest = true
 
 # default manual training
 default_manual_training=true
