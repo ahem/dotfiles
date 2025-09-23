@@ -1,0 +1,7 @@
+[user]
+	name = Anders Hellerup Madsen
+	email = anders@hellerup-madsen.dk
+[alias]
+	up = pull --rebase --autostash
+[core]
+	excludesfile = /Users/ahm/.gitignore
