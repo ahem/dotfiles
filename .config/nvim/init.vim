@@ -108,6 +108,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		-- what is needed for these??
 		vim.keymap.set('n', 'gd', vim.lsp.buf.declaration)
 		vim.keymap.set('n', 'C-]', vim.lsp.buf.definition)
+        vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action)
 	end,
 })
 vim.lsp.enable({'rust_analyzer'})
