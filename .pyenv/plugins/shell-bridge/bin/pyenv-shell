@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Bridge script: allows "pyenv shell" to work when called via the pyenv binary
+# (bypassing the shell function). Normally "pyenv shell" only works through
+# the shell function set up by "pyenv init". This plugin makes the binary
+# gracefully handle it too, which fixes tools (like Zed editor) that call
+# pyenv with its full path.
+#
+# The output of pyenv-sh-shell is shell code meant to be eval'd by the caller.
+# When called directly (not through the shell function), nobody evals it, so
+# we suppress stdout to avoid leaking shell code into terminal output.
+exec pyenv-sh-shell "$@" > /dev/null
