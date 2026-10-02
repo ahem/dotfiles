@@ -13,20 +13,16 @@ export LANG=en_US.UTF-8
 # allow PyLSP to run fx. mypy from virtual environments
 export PYLSP_MYPY_ALLOW_DANGEROUS_CODE_EXECUTION=1
 
-if ! [[ " ${PKG_CONFIG_PATH//:/ } " =~ " ${HOME}/pkg-config " ]]; then
-    export PKG_CONFIG_PATH=${HOME}/pkg-config:${PKG_CONFIG_PATH}
+if [[ -z "$IN_NIX_SHELL" ]]; then
+    export -U DYLD_FALLBACK_FRAMEWORK_PATH="/opt/homebrew/Frameworks:${DYLD_FRAMEWORK_PATH}"
+
+    # this is maybe a bad idea, but this makes it so that brew installed libraries can be found more easily
+    # also, it makes GStreamer plugins like souphttpsrc work.
+    export -U DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:${DYLD_FALLBACK_LIBRARY_PATH}"
+
+    # path to load vulkan layers from
+    export VK_LAYER_PATH=/opt/homebrew/opt/vulkan-validationlayers/share/vulkan/explicit_layer.d
+    export VK_ICD_FILENAMES=$(/opt/homebrew/bin/rg -u -g 'MoltenVK_icd.json' --files /opt/homebrew/Cellar/molten-vk | head -n1)
 fi
-
-export -U DYLD_FALLBACK_FRAMEWORK_PATH="/opt/homebrew/Frameworks:${DYLD_FRAMEWORK_PATH}"
-
-# this is maybe a bad idea, but this makes it so that brew installed libraries can be found more easily
-# also, it makes GStreamer plugins like souphttpsrc work.
-export -U DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:${DYLD_FALLBACK_LIBRARY_PATH}"
-
-# path to load vulkan layers from
-export VK_LAYER_PATH=/opt/homebrew/opt/vulkan-validationlayers/share/vulkan/explicit_layer.d
-export VK_ICD_FILENAMES=$(/opt/homebrew/bin/rg -u -g 'MoltenVK_icd.json' --files /opt/homebrew/Cellar/molten-vk | head -n1)
-
-. "$HOME/.cargo/env"
 
 alias assume=". assume"

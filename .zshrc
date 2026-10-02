@@ -16,7 +16,7 @@ typeset -U PATH path
 # mostly right.
 path_extensions="/opt/homebrew/sbin:/opt/homebrew/bin:$(/opt/homebrew/bin/brew --prefix rustup)/bin"
 
-export -U PATH="$HOME/.local/bin:/Users/ahm/.dotnet/tools:${PATH/\/usr\/local\/bin:/$path_extensions:/usr/local/bin:}"
+export -U PATH="${HOME}/.local/bin:${HOME}/.dotnet/tools:${PATH/\/usr\/local\/bin:/$path_extensions:/usr/local/bin:}:${HOME}/Library/Python/3.14/bin"
 
 
 
